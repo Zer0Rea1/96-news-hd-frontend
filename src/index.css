@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'MyCustomFont'; /* Choose a name for the font */
+  src: url('./assets/jameelnoori.ttf') format('truetype');
+  font-style: normal;
+}
+
+
+/* @font-face {
+  font-family: 'Noto Nastaliq Urdu';
+  src: url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&family=Ubuntu&display=swapf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+} */
+
+body {
+  font-family: "MyCustomFont", serif;
+}
+
+.rtl {
+  direction: rtl;
+}
+
+.ltr {
+  direction: ltr;
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Custom styles */
+.card {
+  @apply rounded-lg overflow-hidden;
+}
+
+.news-item {
+  @apply border-b border-gray-200 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0;
+}
+
+/* Responsive text sizes */
+@media (max-width: 640px) {
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+  .text-xl {
+    font-size: 1rem;
+  }
+}
+
+.font-jameel-noori {
+  font-family: 'MyCustomFont', Arial, sans-serif;
+}
+
+.search-input::placeholder {
+    color: rgb(78, 71, 71);
+    text-align: left;
+    margin: 5px;
+}
+
+
+
+/* edito */
+
+.controls {
+  display: flex;
+  border: 1px solid #ccc;
+  border-top: 0;
+  padding: 10px;
+}
+
+.controls-right {
+  margin-left: auto;
+}
+
+.state {
+  margin: 10px 0;
+  font-family: monospace;
+}
+
+.state-title {
+  color: #999;
+  text-transform: uppercase;
+}
