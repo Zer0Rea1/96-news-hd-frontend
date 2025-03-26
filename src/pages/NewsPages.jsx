@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import NewsSection from "../components/NewsSection";
 
-import {getPost} from '../api/post.api.js'
+import {getPost} from '../api/postblog.api.js'
 const NewsPage = () => {
   const [News, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
