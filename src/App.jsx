@@ -1,5 +1,5 @@
 import {React, useEffect} from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { authActions } from './store/auth'
 import api from "./api/apis";
@@ -10,48 +10,81 @@ import NewPost from "./pages/portal/NewPost";
 import PortalLayout from "./layouts/PortalLayout";
 import SignUp from "./pages/portal/auth/SignUp";
 import Login from "./pages/portal/auth/Login";
+import { AuthProvider } from './context/AuthContext';
+import { ProfileProvider } from './context/ProfileContext';
+import { ProtectedRoute,CheckAdmin } from './components/ProtectedRoute';
+import Profile from "./pages/portal/Profile";
+import Membership from "./pages/portal/Membership";
+import PaymentVerify from "./pages/portal/admin/PaymentVerify";
 
 function App() {
   const dispatch = useDispatch();
   
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await api.get("/api/auth/check-cookie", {
-          withCredentials: true
-        });
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     try {
+  //       const response = await api.get("/api/auth/check-cookie", {
+  //         withCredentials: true
+  //       });
     
-        if(response.status === 201){
-          dispatch(authActions.login());
-        }
-      } catch (error) {
-        console.log("Error checking authentication:", error);
-      }
-    };
+  //       if(response.status === 201){
+  //         dispatch(authActions.login());
+  //       }
+  //     } catch (error) {
+  //       console.log("Error checking authentication:", error);
+  //     }
+  //   };
     
-    checkAuth();
-  }, [dispatch]);
+  //   checkAuth();
+  // }, [dispatch]);
   
   return (
-    <Router>
-      <Routes>
-        {/* Main Pages */}
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />}/>
-          <Route path="/news/:slug" element={<NewsPages />} />
-          <Route path="/newpost" element={<NewPost />} />
-        </Route>
-        {/* portal pages */}
-        <Route path="/portal" element={<PortalLayout/>}>
-          
-        </Route>
-        {/* auth pages */}
-        <Route path="/auth" >
-          <Route path="signup" element={<SignUp />} />
-          <Route path="login" element={<Login />} />
-        </Route>
-      </Routes>
-    </Router>
+    <BrowserRouter>
+      <AuthProvider>
+        <ProfileProvider>
+          <Routes>
+            {/* Main Pages */}
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Home />}/>
+              <Route path="/news/:slug" element={<NewsPages />} />
+            </Route>
+            
+            {/* Portal pages */}
+            <Route path="/portal/*" element={
+              <ProtectedRoute>
+                <PortalLayout />
+              </ProtectedRoute>
+            }>
+              <Route path="profile" element={<Profile />} />
+              <Route path="new-post" element={<NewPost />} />
+              <Route path="membership" element={<Membership />} />
+            </Route>
+
+            {/* admin pages */}
+
+            <Route path="/admin/*" element={
+              <CheckAdmin>
+
+                <PortalLayout />
+              </CheckAdmin>
+              
+            }>
+              <Route path="paymentverify" element={<PaymentVerify />} />
+              
+            </Route>
+            
+            {/* Auth pages */}
+            <Route path="/auth">
+              <Route path="login" element={<Login />} />
+              <Route path="signup" element={<SignUp />} />
+            </Route>
+            
+            {/* Catch all route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </ProfileProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

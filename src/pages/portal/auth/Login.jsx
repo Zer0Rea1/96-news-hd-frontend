@@ -1,56 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../../api/apis';
-import { authActions } from '../../../store/auth'; // Make sure to import authActions
-
+// import { authActions } from '../../../store/auth'; // Make sure to import authActions
+import {AuthContext} from '../../../context/AuthContext.jsx';
 const Login = () => {
-    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-    const dispatch = useDispatch();
+    // const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    // const dispatch = useDispatch();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const navigate = useNavigate();
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            navigate('/portal'); // Redirect to portal if already logged in
-        }
-    }, [isLoggedIn, navigate]);
+    const { isAuthenticated,setIsAuthenticated } = useContext(AuthContext);
+    // console.log(isAuthenticated);
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         navigate('/portal'); // Redirect to portal if already logged in
+    //     }
+    // }, [isAuthenticated, navigate]);
 
     const onSubmit = async (data) => {
         setIsLoading(true);
         setMessage(null);
 
         try {
-            const response = await api.post(
-                '/api/auth/login',
-                {
-                    email: data.email,
-                    password: data.password
-                },
-                {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            const response = await api.post('/api/auth/login', {
+                email: data.email,
+                password: data.password
+            });
 
             if (response.status === 200 || response.status === 201) {
-                dispatch(authActions.login());
+                setIsAuthenticated(true);
                 navigate('/portal');
-            } else {
-                setMessage(response.data?.message || 'Login failed. Please try again.');
             }
         } catch (err) {
             console.error("Login error:", err);
             setMessage(
                 err.response?.data?.message || 
-                err.message || 
-                'An error occurred during login'
+                'Invalid credentials or server error'
             );
+            setIsAuthenticated(false);
         } finally {
             setIsLoading(false);
         }

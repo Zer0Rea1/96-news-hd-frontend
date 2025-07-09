@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import TipTapEditor from '../../components/portal.components/TipTapEditor.jsx';
-import ThumbnailUploader from '../../components/portal.components/ThumbnailUploader.jsx';
+import TipTapEditor from '../../components/portal/components/TipTapEditor.jsx';
+import ThumbnailUploader from '../../components/portal/components/ThumbnailUploader.jsx';
 const NewPost = () => {
   const [content, setContent] = useState('');
   const [thumbnail, setThumbnail] = useState(null);
@@ -20,15 +20,15 @@ const NewPost = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="rtl text-right p-4 max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="ltr font-jameel-noori text-left p-4 max-w-2xl mx-auto">
       <div className="mb-4">
         
         <div className="mb-4">
-          <label className="block text-3xl font-medium mb-2">تھمب نیل</label>
+          <label className="block text-3xl font-medium mb-2">Thumbnail</label>
           <ThumbnailUploader onImageUpload={handleThumbnailUpload} />
         </div>
 
-        <label htmlFor="title" className="block text-3xl font-medium mb-2">عنوان</label>
+        <label htmlFor="title" className="block text-3xl font-medium mb-2">Topic</label>
         <input
           type="text"
           id="title"
@@ -37,14 +37,14 @@ const NewPost = () => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="content" className="block text-3xl font-medium mb-2">مواد</label>
+        <label htmlFor="content" className="block text-3xl font-medium mb-2">Content</label>
         <TipTapEditor value={content} onChange={handleContentChange} />
       </div>
       <button
         type="submit"
         className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-3xl"
       >
-        جمع کرائیں
+        Submit
       </button>
       {/* <div
         className="preview mt-6 p-4 border border-gray-300 rounded-lg rtl text-right"
