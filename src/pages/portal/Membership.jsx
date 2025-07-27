@@ -10,6 +10,7 @@ const Membership = () => {
   const [proofImage, setProofImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
   
   const navigate = useNavigate();
   const { fetchProfileData } = useProfileContext();
@@ -50,7 +51,8 @@ const Membership = () => {
     setError('');
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     if (!proofImage) {
       setError('Please upload payment proof');
       return;
@@ -67,9 +69,10 @@ const Membership = () => {
         amount
       });
 
-      if (response.status === 200) {
-        await fetchProfileData(); // Refresh profile data
-        navigate('/portal/dashboard');
+      if (response.status === 201) {
+        // await fetchProfileData(); // Refresh profile data
+        // navigate('/portal/login');
+        setIsSubmitted(true)
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to verify payment');
@@ -77,6 +80,23 @@ const Membership = () => {
       setLoading(false);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
+          <div className="text-green-500 text-2xl mb-4">✓</div>
+          <h2 className="text-xl font-bold mb-4">Payment Submitted Successfully</h2>
+          <p className="mb-6">
+            Your payment application has been submitted. Please wait 2-3 hours for us to review your submission.
+          </p>
+          <p className="text-gray-500 text-sm">
+            You will be automatically redirected to your dashboard...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-lg">

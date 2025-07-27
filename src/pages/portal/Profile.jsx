@@ -53,7 +53,7 @@ const Profile = () => {
             </div>
             <div>
               <label className="text-gray-600">Paid</label>
-              <p className="text-xl">{userData?.profile.paid ? 'Yes' : 'No'}</p>
+              <p className="text-xl">{userData?.profile.paid}</p>
             </div>
             <div>
               <label className="text-gray-600">Member Since</label>

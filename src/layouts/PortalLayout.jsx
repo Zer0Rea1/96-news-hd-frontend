@@ -77,20 +77,23 @@ const PortalLayout = ({ children }) => {
               </li>
               <li>
                 <Link to="/portal/new-post" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
-                  Posts
+                  New Post
                 </Link>
               </li>
               {(profile.role == "admin")&&<li>
                 <Link to="/portal/users" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
                   Users
                 </Link>
+                <Link to="/admin/paymentverify" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
+                  payment verify
+                </Link>
               </li>
               }
               
               <li>
-                <Link to="/portal/settings" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
+                {/* <Link to="/portal/settings" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
                   Settings
-                </Link>
+                </Link> */}
               </li>
               <li>
                 <Link to="/portal/profile" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
@@ -98,6 +101,7 @@ const PortalLayout = ({ children }) => {
                 </Link>
               </li>
             </ul>
+            <Link to="/auth/logout" className='bg-red-500 p-2 rounded-2xl my-4 mx-2'>Logout</Link>
           </nav>
         </aside>
 

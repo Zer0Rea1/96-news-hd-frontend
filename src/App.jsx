@@ -16,6 +16,7 @@ import { ProtectedRoute,CheckAdmin } from './components/ProtectedRoute';
 import Profile from "./pages/portal/Profile";
 import Membership from "./pages/portal/Membership";
 import PaymentVerify from "./pages/portal/admin/PaymentVerify";
+import Dashboard from "./pages/portal/Dashboard";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,21 +41,24 @@ function App() {
   
   return (
     <BrowserRouter>
+    
       <AuthProvider>
         <ProfileProvider>
           <Routes>
             {/* Main Pages */}
+            
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />}/>
               <Route path="/news/:slug" element={<NewsPages />} />
-            </Route>
-            
+      </Route>
             {/* Portal pages */}
             <Route path="/portal/*" element={
               <ProtectedRoute>
                 <PortalLayout />
               </ProtectedRoute>
             }>
+             
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="profile" element={<Profile />} />
               <Route path="new-post" element={<NewPost />} />
               <Route path="membership" element={<Membership />} />

@@ -19,6 +19,7 @@ const ThumbnailUploader = ({ onImageUpload }) => {
     <div className="relative w-full max-w-[1280px] h-[200px] sm:h-[540px] md:h-[200px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer">
       {image ? (
         <img
+       
           src={image}
           alt="Uploaded Thumbnail"
           className="w-full h-full object-cover rounded-lg"
@@ -43,6 +44,7 @@ const ThumbnailUploader = ({ onImageUpload }) => {
         </div>
       )}
       <input
+      required
         type="file"
         accept="image/*"
         onChange={handleImageUpload}

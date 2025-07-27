@@ -30,7 +30,8 @@ const TipTapEditor = ({ value, onChange }) => {
     },
     editorProps: {
       attributes: {
-        class: 'rtl text-right min-h-[200px] p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-hidden bg-gray-100 shadow-xl font-2xl',
+        required:true,
+        class: 'rtl font-jameel-noori text-right min-h-[200px] p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-hidden bg-gray-100 shadow-xl font-2xl',
       },
     },
   });
