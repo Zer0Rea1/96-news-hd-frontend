@@ -80,6 +80,11 @@ const PortalLayout = ({ children }) => {
                   New Post
                 </Link>
               </li>
+              <li>
+                <Link to="/portal/posts" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
+                  Posts
+                </Link>
+              </li>
               {(profile.role == "admin")&&<li>
                 <Link to="/portal/users" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
                   Users

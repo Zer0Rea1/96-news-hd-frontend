@@ -61,6 +61,13 @@ const Profile = () => {
                 {new Date(userData?.profile.createdAt).toLocaleDateString()}
               </p>
             </div>
+            <div>
+              <label className="text-gray-600">Membership Expires At</label>
+              <p className="text-xl">
+                {new Date(userData?.profile.expiresAt).toLocaleDateString()}
+              </p>
+            </div>
+          
           </div>
 
           <div className="space-y-4">

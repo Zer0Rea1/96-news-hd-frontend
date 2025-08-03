@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import TipTapEditor from '../../components/portal/components/TipTapEditor.jsx';
 import ThumbnailUploader from '../../components/portal/components/ThumbnailUploader.jsx';
 import { useProfileContext } from '../../context/ProfileContext.jsx';
+import api from '../../api/apis.js';
 const NewPost = () => {
   const [content, setContent] = useState('');
   const [thumbnail, setThumbnail] = useState(null);
   const [category, setcategory] = useState('');
   const [Title, setTitle] = useState('')
+  const [Loading, setLoading] = useState(false)
   const { profile, isLoading } = useProfileContext();
   const handleContentChange = (value) => {
     setContent(value);
@@ -20,9 +22,25 @@ const NewPost = () => {
         
       };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
-    console.log('Blog Content:',profile, Title,content,category,thumbnail);
+    console.log('Blog Content:',profile.userId, Title,content,category,thumbnail);
+    const response = await api.post('api/newpost',{
+      title: Title,
+      article: content,
+      thumbnailImage: thumbnail,
+      category: category,
+      authorid: profile.userId
+    })
+
+    if (response.status == 201){
+      console.log("post was created")
+      setLoading(false)
+
+    }else{
+      console.log("there was a problem with posting the post please try again")
+    }
     
   };
 
@@ -63,11 +81,13 @@ const NewPost = () => {
         <TipTapEditor value={content} onChange={handleContentChange} />
       </div>
       <button
+        disabled={isLoading}
         type="sumit"
         id='submit'
         className="bg-red-600  text-white px-4 py-2 rounded-lg hover:bg-red-700 text-3xl"
       >
-        Submit
+       
+        {Loading ? "Creating Post" : "Create Post"}
       </button>
       {/* <div
         className="preview mt-6 p-4 border border-gray-300 rounded-lg rtl text-right"

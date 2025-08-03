@@ -1,21 +1,29 @@
 import {useState,useEffect,React} from "react";
 import NewsSection from "../components/NewsSection";
 import LatestNewsSidebar from "../components/LatestNewsSidebar";
-
+import api from "../api/apis";
 const Home = () => {
   const [Loading, setLoading] = useState(true)
   const [News, setNews] = useState([])
   useEffect(() => {
-    fetch('https://dummyjson.com/posts')
-.then(res => res.json())
-.then(data => {setNews(data.posts);setLoading(false)});
-  
-    
+     const getPosts = async () => {
+            try {
+                setLoading(true);
+                const response = await api.get('/api/getpost');
+                setNews(response.data);
+            } catch (err) {
+                console.error('posts request fetch error:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getPosts()
   }, [])
   
 
-  const filterNews = (news = news, Type) => {
-    const filteredNews = news.filter((item) => item.newsType.includes(Type))
+  const filterNews = (Type) => {
+    const filteredNews = News.filter((item) => item.category.includes(Type))
     return filteredNews;
   }
   return (
@@ -29,18 +37,29 @@ const Home = () => {
             
           </section>
           <section className="mb-8">
-            <h2 className="font-jameel-noori text-3xl mb-6 border-r-4 border-red-600 h-12 pr-4">
-            سیاسی خبریں
-            </h2>
-            {/* <NewsSection index={1} title="this is title" image='https://urdu.arynews.tv/wp-content/uploads/2024/09/ganda1-1-696x342.jpg' article="this is article" /> */}
-            {/* <NewsSection index={2} title="this is title" image='https://urdu.arynews.tv/wp-content/uploads/2024/09/ganda1-1-696x342.jpg' article="this is article" /> */}
+            
+            <NewsSection news={filterNews('pakistan-news')} loading={Loading} section_name="پاکستان"/>
+          
           </section>
           <section className="mb-8">
-            <h2 className="font-jameel-noori text-3xl mb-6 border-r-4 border-red-600 h-12 pr-4">
-            کھیل
-            </h2>
-            {/* <NewsSection index={1} title="this is title" image='https://urdu.arynews.tv/wp-content/uploads/2024/09/ganda1-1-696x342.jpg' article="this is article" /> */}
-            {/* <NewsSection index={2} title="this is title" image='https://urdu.arynews.tv/wp-content/uploads/2024/09/ganda1-1-696x342.jpg' article="this is article" /> */}
+            <NewsSection news={filterNews('international-news')} loading={Loading} section_name="دنیا"/>
+
+          </section>
+          <section className="mb-8">
+            <NewsSection news={filterNews('sports-news')} loading={Loading} section_name="کھیل"/>
+
+          </section>
+          <section className="mb-8">
+            <NewsSection news={filterNews('business-news')} loading={Loading} section_name="کاروبار"/>
+
+          </section>
+          <section className="mb-8">
+            <NewsSection news={filterNews('health-news')} loading={Loading} section_name="صحت"/>
+
+          </section>
+          <section className="mb-8">
+            <NewsSection news={filterNews('science-news')} loading={Loading} section_name="سائنس"/>
+
           </section>
         </div>
         <div className="md:col-span-1">

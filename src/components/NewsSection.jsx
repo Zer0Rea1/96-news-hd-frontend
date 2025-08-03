@@ -1,6 +1,9 @@
-import React from "react";
+import {React,useState} from "react";
 import { Link } from "react-router-dom";
-const NewsSection = ({loading,news,section_name}) => {
+const NewsSection = ({loading,news,section_name,}) => {
+  // const [Post, setPost] = useState([])
+  // const filteredNews = news.filter((item) => item.category.includes(Type))
+  // setPost(filteredNews)
   return (
     <>
         <h2 className="font-jameel-noori text-3xl mb-6 border-r-4 border-red-600 h-12 pr-4">
@@ -12,18 +15,19 @@ const NewsSection = ({loading,news,section_name}) => {
         key={index}
         className="bg-gray-100 shadow-md rounded-lg p-4 mb-4 hover:shadow-lg transition-shadow duration-300"
         >
-        <Link to={`/post/`}>
+        <Link to={`/news/${item._id}`}>
             <img
             loading="lazy"
-            src="https://urdu.arynews.tv/wp-content/uploads/2024/09/ganda1-1-696x342.jpg"
+            src={item.thumbnailImage}
             alt=""
-            className="w-full h-auto object-cover rounded-lg"
+            className="w-full h-[60vh] object-cover rounded-lg"
             />
             <h3 className="font-jameel-noori text-[20px] mt-2 mb-4">
             {item.title}
             </h3>
-            <p className="font-jameel-noori text-[15px] leading-[2.5rem]">
-            {item.body.substring(0, 150) || item.body}...
+            <p className="font-jameel-noori text-[15px] leading-[2.5rem]" dangerouslySetInnerHTML={{ __html: item.article.substring(0, 150) || item.article + "..." }}>
+            {/* {item.article.substring(0, 150) || item.article}... */}
+            
             </p>
         </Link>
         </div>
