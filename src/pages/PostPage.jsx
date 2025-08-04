@@ -8,6 +8,8 @@ const PostPage = () => {
 
   const [Loading, setLoading] = useState(true);
   const [Post, setPost] = useState({});
+  const [LatestNews, setLatestNews] = useState({});
+
 
   const getPost = async () => {
     try {
@@ -21,8 +23,19 @@ const PostPage = () => {
     }
   };
 
+  const getLatestNews = async () => {
+    try {
+      // setLoading(true);
+      const response = await api.get('/api/getpost');
+      setLatestNews(response.data);
+    } catch (err) {
+      console.error('posts request fetch error:', err);
+    } 
+  }
+
   useEffect(() => {
     getPost();
+    getLatestNews();
   }, []);
 
   if (Loading) {
@@ -34,19 +47,19 @@ const PostPage = () => {
       <div className="bg-white shadow-md rounded-lg p-6 md:col-span-2">
         <img className="max-h-[320px] max-w-720 rounded w-full h-full object-cover contain-content" src={Post.post.thumbnailImage} alt="" />
         <h1 className="text-3xl font-bold mb-6 mt-6 font-jameel-noori">
-        {Post.post.title}
+          {Post.post.title}
         </h1>
         <span className="normal-font inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mb-2">
-                                    {Post.post.category}
-                                </span>
+          {Post.post.category}
+        </span>
         <p className="normal-font">{Post.authorname}</p>
         <hr className="my-5" />
-        <p className="text-xl font-jameel-noori leading-10" dangerouslySetInnerHTML={{__html: Post.post.article}}></p>
+        <p className="text-xl font-jameel-noori leading-10" dangerouslySetInnerHTML={{ __html: Post.post.article }}></p>
       </div>
-      {/* <div className="md:col-span-1">
-          <LatestNewsSidebar latestNews={posts}  />
-      </div> */}
-      {/* <HtmlComponent/> */}
+      <div className="md:col-span-1">
+        <LatestNewsSidebar latestNews={LatestNews}  />
+      </div>
+
     </div>
   );
 };

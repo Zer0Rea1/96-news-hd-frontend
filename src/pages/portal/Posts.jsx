@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react'
 import api from '../../api/apis';
 import { useProfileContext } from '../../context/ProfileContext.jsx';
 import { useAuthContext } from '../../context/AuthContext';
-
+import DeletePostButton from '../../components/DeletePostButton.jsx';
 const Posts = () => {
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const { profile, isLoading } = useProfileContext();
     const { isAuthenticated } = useAuthContext();
+
+    const handleDeleteSuccess = (deletedPostId) => {
+        // Update state to remove the deleted post
+        setPosts(posts.filter(post => post._id !== deletedPostId));
+    };
 
     useEffect(() => {
         const getPosts = async () => {
@@ -21,7 +26,7 @@ const Posts = () => {
                 setLoading(false);
             }
         };
-        
+
         if (isAuthenticated) {
             getPosts();
         }
@@ -38,7 +43,7 @@ const Posts = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Your Posts</h1>
-            
+
             {posts.length === 0 ? (
                 <div className="text-center py-12">
                     <p className="text-gray-500 text-lg">No posts found. Create your first post!</p>
@@ -46,13 +51,13 @@ const Posts = () => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {posts.map((post) => (
-                        <div 
+                        <div
                             key={post._id}
                             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                         >
                             <div className="h-48 overflow-hidden">
-                                <img 
-                                    src={post.thumbnailImage} 
+                                <img
+                                    src={post.thumbnailImage}
                                     alt={post.title}
                                     className="w-full h-full object-cover contain-content"
                                 />
@@ -63,9 +68,13 @@ const Posts = () => {
                                 </span>
                                 <h3 className="text-xl font-semibold text-gray-800 mb-2">{post.title}</h3>
                                 <div className="flex justify-between items-center mt-4">
-                                    <button className="text-blue-600 hover:text-blue-800 font-medium">
+                                    {/* <button className="text-blue-600 hover:text-blue-800 font-medium">
                                         View Details
-                                    </button>
+                                    </button> */}
+                                    <DeletePostButton
+                                        postId={post._id}
+                                        onDelete={handleDeleteSuccess}  // Passing the function as prop
+                                    />
                                     <span className="text-sm text-gray-500">
                                         {new Date(post.dateandtime).toLocaleDateString()}
                                     </span>

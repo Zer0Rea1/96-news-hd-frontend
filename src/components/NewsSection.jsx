@@ -1,6 +1,6 @@
 import {React,useState} from "react";
 import { Link } from "react-router-dom";
-const NewsSection = ({loading,news,section_name,}) => {
+const NewsSection = ({loading,news,section_name,category}) => {
   // const [Post, setPost] = useState([])
   // const filteredNews = news.filter((item) => item.category.includes(Type))
   // setPost(filteredNews)
@@ -33,6 +33,8 @@ const NewsSection = ({loading,news,section_name,}) => {
         </div>
 
         ))}
+
+        <Link className="rtl w-full text-center block text-red-500 underline text-xl" to={`/page/${category}`}>See More</Link>
         
     </>
   );

@@ -19,7 +19,8 @@ import PaymentVerify from "./pages/portal/admin/PaymentVerify";
 import Dashboard from "./pages/portal/Dashboard";
 import Posts from "./pages/portal/Posts";
 import PostPage from "./pages/PostPage";
-
+import NewsPage from "./pages/NewsPages";
+import { ToastContainer } from 'react-toastify';
 function App() {
   const dispatch = useDispatch();
   
@@ -51,6 +52,8 @@ function App() {
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />}/>
               <Route path="/news/:slug" element={<PostPage />} />
+              <Route path="/page/:slug" element={<NewsPage />} />
+
             </Route> 
              
             {/* Portal pages */}
@@ -90,6 +93,7 @@ function App() {
             {/* Catch all route */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <ToastContainer position="top-right" autoClose={5000} />
         </ProfileProvider>
       </AuthProvider>
     </BrowserRouter>

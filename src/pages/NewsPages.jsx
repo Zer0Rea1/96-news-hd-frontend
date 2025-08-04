@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import NewsSection from "../components/NewsSection";
-
+import api from "../api/apis.js";
 import {getPost} from '../api/postblog.api.js'
 const NewsPage = () => {
   const [News, setNews] = useState([]);
@@ -14,10 +14,16 @@ const NewsPage = () => {
     const fetchData = async () => {
       try {
         setLoading(true); // Start loading
-        const response = await fetch('https://dummyjson.com/posts'); // Wait for the API response
-        const data = await response.json();
+        const response = await api.get('/api/getpost') // Wait for the API response
+        // const data = response.data
+        if(slug !== 'latest-news'){
+          const filteredNews = response.data.filter((item) => item.category.includes(slug))
+          setNews(filteredNews); // Update the state with fetched data
+
+        }else{
+          setNews(response.data)
+        }
        
-        setNews(data); // Update the state with fetched data
       } catch (error) {
         console.error("Error fetching posts:", error.message);
       } finally {
@@ -39,6 +45,10 @@ const NewsPage = () => {
     "science-news": "سائنس",
   };
 
+
+
+
+
   return (
     <div className="container mx-auto py-8 px-4 ">
       <div className="font-jameel-noori text-[25px] mb-4 border-r-4 border-red-600 h-12 pr-4">
@@ -50,13 +60,13 @@ const NewsPage = () => {
         ) : News.length > 0 ? (
           News.map((item, index) => (
             <Link
-              to="/post"
+              to={`/news/${item._id}`}
               key={index}
               className="news-card shadow-2xl p-2 rounded"
             >
               <img
                 className="rounded w-full h-auto object-cover"
-                src={item.image}
+                src={item.thumbnailImage}
                 alt=""
               />
               <div className="title font-jameel-noori m-4">{item.title}</div>

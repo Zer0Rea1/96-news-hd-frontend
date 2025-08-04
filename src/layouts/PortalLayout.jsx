@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useProfileContext } from '../context/ProfileContext';
-
+import api from '../api/apis';
+import { toast } from 'react-toastify'; // Consider adding toast notifications
+import 'react-toastify/dist/ReactToastify.css';
 const PortalLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { profile, isLoading } = useProfileContext();
@@ -94,6 +96,8 @@ const PortalLayout = ({ children }) => {
                 </Link>
               </li>
               }
+
+              
               
               <li>
                 {/* <Link to="/portal/settings" className="block p-2 hover:bg-[#9FB7B9] rounded text-white">
@@ -105,8 +109,13 @@ const PortalLayout = ({ children }) => {
                   Profile
                 </Link>
               </li>
+              <li>
+                <button onClick={async()=>{const response = await api.post('/api/auth/logout');if(response.status == 200){toast.success('logout successfully!');}}} className="block p-2 hover:bg-red-200 rounded text-red-500">
+                  Logout
+                </button>
+              </li>
             </ul>
-            <Link to="/auth/logout" className='bg-red-500 p-2 rounded-2xl my-4 mx-2'>Logout</Link>
+        
           </nav>
         </aside>
 

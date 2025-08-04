@@ -32,33 +32,33 @@ const Home = () => {
         <div className="md:col-span-2">
           <section className="mb-8">
             
-            <NewsSection news={News} loading={Loading} section_name="اہم ترین خبریں"/>
+            <NewsSection news={News} category={'latest-news'} loading={Loading} section_name="اہم ترین خبریں"/>
             
             
           </section>
           <section className="mb-8">
             
-            <NewsSection news={filterNews('pakistan-news')} loading={Loading} section_name="پاکستان"/>
+            <NewsSection news={filterNews('pakistan-news')} loading={Loading} section_name="پاکستان" category="pakistan-news"/>
           
           </section>
           <section className="mb-8">
-            <NewsSection news={filterNews('international-news')} loading={Loading} section_name="دنیا"/>
+            <NewsSection news={filterNews('international-news')} loading={Loading} section_name="دنیا" category="international-news"/>
 
           </section>
           <section className="mb-8">
-            <NewsSection news={filterNews('sports-news')} loading={Loading} section_name="کھیل"/>
+            <NewsSection news={filterNews('sports-news')} loading={Loading} section_name="کھیل" category="sports-news"/>
 
           </section>
           <section className="mb-8">
-            <NewsSection news={filterNews('business-news')} loading={Loading} section_name="کاروبار"/>
+            <NewsSection news={filterNews('business-news')} loading={Loading} section_name="کاروبار" category="business-news"/>
 
           </section>
           <section className="mb-8">
-            <NewsSection news={filterNews('health-news')} loading={Loading} section_name="صحت"/>
+            <NewsSection news={filterNews('health-news')} loading={Loading} section_name="صحت" category="health-news"/>
 
           </section>
           <section className="mb-8">
-            <NewsSection news={filterNews('science-news')} loading={Loading} section_name="سائنس"/>
+            <NewsSection news={filterNews('science-news')} loading={Loading} section_name="سائنس" category="science-news"/>
 
           </section>
         </div>

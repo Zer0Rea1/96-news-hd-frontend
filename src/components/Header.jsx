@@ -5,13 +5,13 @@ import brand from '../assets/96news.jpg';
 const Header = () => {
   // Array of navigation items
   const navItems = [
-    { route: '/news/latest-news', name: 'تازہ ترین', type: 'link' },
-    { route: '/news/pakistan-news', name: 'پاکستان', type: 'link' },
-    { route: '/news/international-news', name: 'دنیا', type: 'link' },
-    { route: '/news/sports-news', name: 'کھیل', type: 'link' },
-    { route: '/news/business-news', name: 'کاروبار', type: 'link' },
-    { route: '/news/health-news', name: 'صحت', type: 'link' },
-    { route: '/news/science-news', name: 'سائنس', type: 'link' },
+    { route: '/page/latest-news', name: 'تازہ ترین', type: 'link' },
+    { route: '/page/pakistan-news', name: 'پاکستان', type: 'link' },
+    { route: '/page/international-news', name: 'دنیا', type: 'link' },
+    { route: '/page/sports-news', name: 'کھیل', type: 'link' },
+    { route: '/page/business-news', name: 'کاروبار', type: 'link' },
+    { route: '/page/health-news', name: 'صحت', type: 'link' },
+    { route: '/page/science-news', name: 'سائنس', type: 'link' },
   ];
 
   // Function to toggle the search bar
