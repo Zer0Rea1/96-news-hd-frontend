@@ -1,8 +1,22 @@
-import React from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import brand from '../assets/96news.jpg';
+import api from '../api/apis'; // Make sure this path is correct
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // for redirect
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+
+    navigate(`/search`);
+  };
+
   // Array of navigation items
   const navItems = [
     { route: '/page/latest-news', name: 'تازہ ترین', type: 'link' },
@@ -33,16 +47,28 @@ const Header = () => {
         <nav>
           <ul className="flex flex-wrap justify-center space-x-2 md:space-x-4 items-center">
             {/* Search Icon */}
-            <li className="p-3 cursor-pointer" onClick={toggleSearchBar}>
+            <li className="p-3 cursor-pointer" onClick={handleSearch}>
               <i className="fa-solid fa-magnifying-glass text-xl hover:text-red-300 transition-colors duration-300"></i>
             </li>
 
             {/* Search Input */}
-            <input
-              type="text"
-              className="search-input rtl hidden bg-red-400 border-2 border-red-700 rounded-lg px-4 py-2 text-white placeholder-gray-200 focus:outline-none focus:border-red-900 transition-all duration-300"
-              placeholder="...Search"
-            />
+            {/* <form onSubmit={handleSearch}>
+
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                type="text"
+                className="search-input rtl hidden bg-red-400 border-2 border-red-700 rounded-lg px-4 py-2 text-white placeholder-gray-200 focus:outline-none focus:border-red-900 transition-all duration-300"
+                placeholder="...Search"
+              />
+
+              <button
+                type="submit"
+                className="ml-2 bg-white text-red-600 px-3 py-1 rounded font-bold"
+              >
+                تلاش
+              </button>
+            </form> */}
 
             {/* Dynamically Render Navigation Items */}
             {navItems.map((item, index) => (

@@ -23,6 +23,7 @@ import NewsPage from "./pages/NewsPages";
 import { ToastContainer } from 'react-toastify';
 import EditPost from "./pages/portal/EditPost";
 import Users from "./pages/portal/admin/Users";
+import SearchPage from "./pages/SearchPage";
 function App() {
   const dispatch = useDispatch();
   
@@ -55,7 +56,7 @@ function App() {
               <Route index element={<Home />}/>
               <Route path="/news/:slug" element={<PostPage />} />
               <Route path="/page/:slug" element={<NewsPage />} />
-
+              <Route path="/search" element={<SearchPage />} />
             </Route> 
              
             {/* Portal pages */}
@@ -70,6 +71,8 @@ function App() {
               <Route path="new-post" element={<NewPost />} />
               <Route path="posts" element={<Posts />} />
               <Route path="/portal/editpost/:slug" element={<EditPost />} />
+              
+
 
 
               <Route path="membership" element={<Membership />} />
