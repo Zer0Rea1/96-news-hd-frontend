@@ -7,7 +7,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import Toolbar from './TipTapToolbar.jsx';
 
-const TipTapEditor = ({ value, onChange }) => {
+const TipTapEditor = ({ value, onChange, initialcontent }) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -23,14 +23,15 @@ const TipTapEditor = ({ value, onChange }) => {
         defaultAlignment: 'right',
       }),
     ],
-    content: value,
+    content: initialcontent || value, // Use initialcontent if provided
+
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       onChange(html);
     },
     editorProps: {
       attributes: {
-        required:true,
+        required: true,
         class: 'rtl font-jameel-noori text-right min-h-[200px] p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-hidden bg-gray-100 shadow-xl font-2xl',
       },
     },

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import api from '../api/apis';
-import ThumbnailUploader from './ThumbnailUploader'; // Your image upload component
+import api from '../../../api/apis';
+import ThumbnailUploader from './ThumbnailUploader';
 
 const EditPostForm = ({ post, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -16,6 +16,7 @@ const EditPostForm = ({ post, onUpdate }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    console.log(formData)
   };
 
   // Handle image upload
@@ -36,7 +37,7 @@ const EditPostForm = ({ post, onUpdate }) => {
       formDataToSend.append('title', formData.title);
       formDataToSend.append('article', formData.article);
       formDataToSend.append('category', formData.category);
-      
+      console.log(formDataToSend)
       // Only append image if a new one was uploaded
       if (formData.thumbnailImage) {
         formDataToSend.append('thumbnailImage', formData.thumbnailImage);

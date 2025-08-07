@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from 'react'
-import api from '../api/apis';
+import api from '../../../api/apis';
 const DeletePostButton = ({ postId, onDelete }) => {
     const [isDeleting, setIsDeleting] = useState(false);
 

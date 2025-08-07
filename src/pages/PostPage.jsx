@@ -27,7 +27,7 @@ const PostPage = () => {
     try {
       // setLoading(true);
       const response = await api.get('/api/getpost');
-      setLatestNews(response.data);
+      setLatestNews(response.data.posts);
     } catch (err) {
       console.error('posts request fetch error:', err);
     } 

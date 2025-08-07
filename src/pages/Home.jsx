@@ -10,7 +10,7 @@ const Home = () => {
             try {
                 setLoading(true);
                 const response = await api.get('/api/getpost');
-                setNews(response.data);
+                setNews(response.data.posts);
             } catch (err) {
                 console.error('posts request fetch error:', err);
             } finally {

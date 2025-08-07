@@ -21,6 +21,8 @@ import Posts from "./pages/portal/Posts";
 import PostPage from "./pages/PostPage";
 import NewsPage from "./pages/NewsPages";
 import { ToastContainer } from 'react-toastify';
+import EditPost from "./pages/portal/EditPost";
+import Users from "./pages/portal/admin/Users";
 function App() {
   const dispatch = useDispatch();
   
@@ -57,7 +59,7 @@ function App() {
             </Route> 
              
             {/* Portal pages */}
-            <Route path="/portal/*" element={
+            <Route path="/portal/" element={
               <ProtectedRoute>
                 <PortalLayout />
               </ProtectedRoute>
@@ -67,6 +69,8 @@ function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="new-post" element={<NewPost />} />
               <Route path="posts" element={<Posts />} />
+              <Route path="/portal/editpost/:slug" element={<EditPost />} />
+
 
               <Route path="membership" element={<Membership />} />
             </Route>
@@ -81,6 +85,7 @@ function App() {
               
             }>
               <Route path="paymentverify" element={<PaymentVerify />} />
+              <Route path="users" element={<Users />} />
               
             </Route>
             

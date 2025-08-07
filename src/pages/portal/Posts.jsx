@@ -2,13 +2,19 @@ import React, { useEffect, useState } from 'react'
 import api from '../../api/apis';
 import { useProfileContext } from '../../context/ProfileContext.jsx';
 import { useAuthContext } from '../../context/AuthContext';
-import DeletePostButton from '../../components/DeletePostButton.jsx';
+import DeletePostButton from '../../components/portal/components/DeletePostButton.jsx';
+import EditPostForm from '../../components/portal/components/EditPostForm.jsx';
+import { Link } from 'react-router';
 const Posts = () => {
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const { profile, isLoading } = useProfileContext();
     const { isAuthenticated } = useAuthContext();
-
+    const handleUpdateSuccess = (updatedPost) => {
+    setPosts(posts.map(post => 
+      post._id === updatedPost._id ? updatedPost : post
+    ));
+  };
     const handleDeleteSuccess = (deletedPostId) => {
         // Update state to remove the deleted post
         setPosts(posts.filter(post => post._id !== deletedPostId));
@@ -75,6 +81,7 @@ const Posts = () => {
                                         postId={post._id}
                                         onDelete={handleDeleteSuccess}  // Passing the function as prop
                                     />
+                                    <Link to={`/portal/editpost/${post._id}`}>Edit Post</Link>
                                     <span className="text-sm text-gray-500">
                                         {new Date(post.dateandtime).toLocaleDateString()}
                                     </span>

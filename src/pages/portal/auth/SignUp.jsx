@@ -5,39 +5,49 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../../api/apis';
 
 const SignUp = () => {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({});
   const [message, setMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
+
+  const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/'); // Redirect if already logged in
+      navigate('/');
     }
   }, [isLoggedIn, navigate]);
 
+  const onNextStep = () => {
+    const currentValues = getValues();
+    setFormData({ ...formData, ...currentValues });
+    setStep(2);
+  };
+
   const onSubmit = async (data) => {
-    setIsLoading(true); // Start loading
-    setMessage(null); // Clear previous messages
+    setIsLoading(true);
+    setMessage(null);
+    const completeData = { ...formData, ...data };
+    console.log(completeData)
 
     try {
-      const response = await api.post('/api/auth/signup', data);
+      const response = await api.post('/api/auth/signup', completeData);
 
       if (response.status === 201) {
         setMessage('Signup successful! Redirecting to login...');
         setTimeout(() => {
-          navigate('/auth/login'); // Redirect to login page after 2 seconds
+          navigate('/auth/login');
         }, 2000);
       } else {
         setMessage(response.data.message || 'Signup failed. Please try again.');
       }
     } catch (err) {
-      // console.error('Signup failed:', err);
       setMessage(err.response?.data?.message || 'Something went wrong. Please try again.');
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   };
 
@@ -45,46 +55,53 @@ const SignUp = () => {
     <div className="ltr font-sans p-4 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
       {message && <p className={`mb-4 ${message.includes('success') ? 'text-green-600' : 'text-red-600'}`}>{message}</p>}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="username" className="block text-sm font-medium text-black">Username</label>
-        <input
-          id="username"
-          type="text"
-          {...register('username', { required: 'Username is required' })}
-          name="username"
-          placeholder="User Name"
-          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-        />
-        {errors.username && <p className="text-red-600 text-sm mt-1">{errors.username.message}</p>}
+      <form onSubmit={handleSubmit(step === 1 ? onNextStep : onSubmit)}>
+        {step === 1 && (
+          <>
+            <label className="block text-sm font-medium text-black">Username</label>
+            <input {...register('username', { required: 'Username is required' })} className="w-full p-2 border rounded-lg mb-4" placeholder="Username" />
+            {errors.username && <p className="text-red-600 text-sm">{errors.username.message}</p>}
 
-        <label htmlFor="email" className="block text-sm font-medium text-black">Email</label>
-        <input
-          type="email"
-          id="email"
-          {...register('email', { required: 'Email is required' })}
-          name="email"
-          placeholder="Email"
-          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-        />
-        {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>}
+            <label className="block text-sm font-medium text-black">Email</label>
+            <input type="email" {...register('email', { required: 'Email is required' })} className="w-full p-2 border rounded-lg mb-4" placeholder="Email" />
+            {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
 
-        <label htmlFor="password" className="block text-sm font-medium text-black">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          {...register('password', { required: 'Password is required' })}
-          placeholder="Password"
-          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-        />
-        {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>}
+            <label className="block text-sm font-medium text-black">Password</label>
+            <input type="password" {...register('password', { required: 'Password is required' })} className="w-full p-2 border rounded-lg mb-4" placeholder="Password" />
+            {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <label className="block text-sm font-medium text-black">First Name</label>
+            <input {...register('firstName', { required: 'First name is required' })} className="w-full p-2 border rounded-lg mb-4" placeholder="First Name" />
+            {errors.firstName && <p className="text-red-600 text-sm">{errors.firstName.message}</p>}
+
+            <label className="block text-sm font-medium text-black">Last Name</label>
+            <input {...register('lastName', { required: 'Last name is required' })} className="w-full p-2 border rounded-lg mb-4" placeholder="Last Name" />
+            {errors.lastName && <p className="text-red-600 text-sm">{errors.lastName.message}</p>}
+
+            <label className="block text-sm font-medium text-black">Phone Number</label>
+            <input type="tel" {...register('phoneNumber', { required: 'Phone number is required' })} className="w-full p-2 border rounded-lg mb-4" placeholder="Phone" />
+            {errors.phone && <p className="text-red-600 text-sm">{errors.phone.message}</p>}
+
+            <label className="block text-sm font-medium text-black">Date of Birth</label>
+            <input type="date" {...register('dateOfBirth', { required: 'Date of birth is required' })} className="w-full p-2 border rounded-lg mb-4" />
+            {errors.dob && <p className="text-red-600 text-sm">{errors.dob.message}</p>}
+
+            <label className="block text-sm font-medium text-black">Designation City</label>
+            <input {...register('city', { required: 'City is required' })} className="w-full p-2 border rounded-lg mb-4" placeholder="City or Area for Blogs" />
+            {errors.city && <p className="text-red-600 text-sm">{errors.city.message}</p>}
+          </>
+        )}
 
         <button
           type="submit"
-          disabled={isLoading} // Disable button while loading
+          disabled={isLoading}
           className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:bg-blue-300"
         >
-          {isLoading ? 'Signing Up...' : 'Sign Up'}
+          {isLoading ? 'Signing Up...' : step === 1 ? 'Next' : 'Sign Up'}
         </button>
       </form>
 
