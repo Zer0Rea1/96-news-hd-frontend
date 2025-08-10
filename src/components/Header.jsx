@@ -11,9 +11,7 @@ const Header = () => {
   const navigate = useNavigate(); // for redirect
 
   const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-
+  
     navigate(`/search`);
   };
 
