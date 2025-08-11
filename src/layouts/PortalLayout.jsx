@@ -128,7 +128,7 @@ const PortalLayout = ({ children }) => {
       </div>
 
       {/* Floating Add Button */}
-      <button className="fixed bottom-4 right-4 bg-[#8400C6] text-white p-4 rounded-full shadow-lg hover:bg-[#6A00A3] transition-colors">
+      <Link to={'/portal/new-post'} className="fixed bottom-4 right-4 bg-[#4681C9] text-white p-4 rounded-full shadow-lg hover:bg-[#4681C9] transition-colors">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
@@ -143,7 +143,7 @@ const PortalLayout = ({ children }) => {
             d="M12 4v16m8-8H4"
           />
         </svg>
-      </button>
+      </Link>
     </div>
   );
 };

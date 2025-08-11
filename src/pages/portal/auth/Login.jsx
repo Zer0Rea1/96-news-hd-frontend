@@ -47,7 +47,7 @@ const Login = () => {
     };
 
     return (
-        <div className="ltr text-left p-4 max-w-md mx-auto">
+        <div className="font-normal ltr text-left p-4 max-w-md mx-auto">
             <h1 className="text-2xl font-bold mb-4">Login</h1>
             {message && (
                 <p className={`mb-4 ${message.includes('failed') ? 'text-red-600' : 'text-green-600'}`}>

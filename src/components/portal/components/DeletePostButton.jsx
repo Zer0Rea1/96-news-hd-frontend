@@ -20,7 +20,7 @@ const DeletePostButton = ({ postId, onDelete }) => {
         <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            className="border-red-500 border-2 text-red-500 h-full  p-2 rounded-xl hover:bg-red-100 pointer-coarse"
         >
             {isDeleting ? 'Deleting...' : 'Delete'}
         </button>

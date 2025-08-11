@@ -2,22 +2,29 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import LatestNewsSidebar from "../components/LatestNewsSidebar";
 import api from "../api/apis";
-import '../App.css'
+import "../App.css";
+
 const PostPage = () => {
   const { slug } = useParams();
-
-  const [Loading, setLoading] = useState(true);
-  const [Post, setPost] = useState({});
-  const [LatestNews, setLatestNews] = useState({});
-
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [post, setPost] = useState(null);
+  const [latestNews, setLatestNews] = useState([]);
 
   const getPost = async () => {
     try {
       setLoading(true);
+      setError("");
       const response = await api.get(`/api/getpostbyid/${slug}`);
-      setPost(response.data);
+
+      if (response.status === 200 && response.data?.post) {
+        setPost(response.data);
+      } else {
+        setError("Unable to load post. Please refresh or try again later.");
+      }
     } catch (err) {
-      console.error('posts request fetch error:', err);
+      console.error("Post fetch error:", err);
+      setError("An error occurred while fetching the post.");
     } finally {
       setLoading(false);
     }
@@ -25,58 +32,99 @@ const PostPage = () => {
 
   const getLatestNews = async () => {
     try {
-      // setLoading(true);
-      const response = await api.get('/api/getpost');
-      setLatestNews(response.data.posts);
+      const response = await api.get("/api/getpost");
+      if (response.status === 200 && response.data?.posts) {
+        setLatestNews(response.data.posts);
+      }
     } catch (err) {
-      console.error('posts request fetch error:', err);
-    } 
-  }
+      console.error("Latest news fetch error:", err);
+    }
+  };
 
   useEffect(() => {
     getPost();
     getLatestNews();
-  }, []);
+  }, [slug]);
 
-  if (Loading) {
-    return <HtmlComponent />;
+  if (loading) return <LoadingSkeleton />;
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+        <div className="bg-red-100 text-red-800 px-4 py-3 rounded-md max-w-lg text-center">
+          {error}
+        </div>
+        <button
+          onClick={getPost}
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (!post?.post) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+        <p className="text-gray-500">No post found.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div className="bg-white shadow-md rounded-lg p-6 md:col-span-2">
-        <img className="max-h-[320px] max-w-720 rounded w-full h-full object-cover contain-content" src={Post.post.thumbnailImage} alt="" />
-        <h1 className="text-3xl font-bold mb-6 mt-6 font-jameel-noori">
-          {Post.post.title}
+    <div className="container mx-auto py-6 px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Post Content */}
+      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 lg:col-span-2">
+        <img
+          className="w-full max-h-[320px] object-cover rounded-lg"
+          src={post.post.thumbnailImage}
+          alt={post.post.title}
+        />
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 mt-6 font-jameel-noori">
+          {post.post.title}
         </h1>
         <span className="normal-font inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mb-2">
-          {Post.post.category}
+          {post.post.category}
         </span>
-        <p className="normal-font">{Post.authorname}</p>
+        <p className="normal-font text-sm text-gray-500">{post.authorname}</p>
         <hr className="my-5" />
-        <p className="text-xl font-jameel-noori leading-10" dangerouslySetInnerHTML={{ __html: Post.post.article }}></p>
-      </div>
-      <div className="md:col-span-1">
-        <LatestNewsSidebar latestNews={LatestNews}  />
+        <div
+          className="text-base sm:text-lg font-jameel-noori leading-8 sm:leading-10"
+          dangerouslySetInnerHTML={{ __html: post.post.article }}
+        ></div>
       </div>
 
+      {/* Sidebar */}
+      <div className="lg:col-span-1">
+        <LatestNewsSidebar latestNews={latestNews} loading={loading} />
+      </div>
     </div>
   );
 };
 
-const HtmlComponent = () => {
+const LoadingSkeleton = () => {
   return (
-    <>
-      <div className="bg-white p-6 md:col-span-2 rounded-lg">
+    <div className="container mx-auto py-6 px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md lg:col-span-2">
         <div className="w-full h-64 bg-gray-200 rounded-lg animate-pulse"></div>
         <div className="mt-6 mb-6">
           <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
         </div>
         <div className="h-24 bg-gray-200 rounded animate-pulse"></div>
       </div>
-    </>
+      <div className="lg:col-span-1">
+        <div className="space-y-4">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="h-20 bg-gray-200 rounded-lg animate-pulse"
+            ></div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
-
 
 export default PostPage;

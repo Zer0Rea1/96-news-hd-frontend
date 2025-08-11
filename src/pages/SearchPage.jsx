@@ -32,7 +32,7 @@ const SearchPage = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded">
           Search
         </button>
       </form>
@@ -43,7 +43,7 @@ const SearchPage = () => {
         <ul className="space-y-4">
           {results.map((post) => (
             <li key={post._id} className="p-4 bg-white shadow rounded">
-              <Link to={`/post/${post.slug}`} className="text-xl font-bold text-blue-700">
+              <Link to={`/news/${post._id}`} className="text-xl font-bold text-red-700">
                 {post.title}
               </Link>
               <p className="text-sm text-gray-600">{post.category}</p>

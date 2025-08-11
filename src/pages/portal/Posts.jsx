@@ -11,10 +11,10 @@ const Posts = () => {
     const { profile, isLoading } = useProfileContext();
     const { isAuthenticated } = useAuthContext();
     const handleUpdateSuccess = (updatedPost) => {
-    setPosts(posts.map(post => 
-      post._id === updatedPost._id ? updatedPost : post
-    ));
-  };
+        setPosts(posts.map(post =>
+            post._id === updatedPost._id ? updatedPost : post
+        ));
+    };
     const handleDeleteSuccess = (deletedPostId) => {
         // Update state to remove the deleted post
         setPosts(posts.filter(post => post._id !== deletedPostId));
@@ -69,11 +69,15 @@ const Posts = () => {
                                 />
                             </div>
                             <div className="p-4">
+
+                                <h3 className="text-xl font-semibold text-gray-800 mb-2">{post.title}</h3>
+                                <span className="text-sm text-gray-500 mx-2">
+                                    {new Date(post.dateandtime).toLocaleDateString()}
+                                </span>
                                 <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-2">
                                     {post.category}
                                 </span>
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">{post.title}</h3>
-                                <div className="flex justify-between items-center mt-4">
+                                <div className="flex justify-between items-center mt-2">
                                     {/* <button className="text-blue-600 hover:text-blue-800 font-medium">
                                         View Details
                                     </button> */}
@@ -81,10 +85,8 @@ const Posts = () => {
                                         postId={post._id}
                                         onDelete={handleDeleteSuccess}  // Passing the function as prop
                                     />
-                                    <Link to={`/portal/editpost/${post._id}`}>Edit Post</Link>
-                                    <span className="text-sm text-gray-500">
-                                        {new Date(post.dateandtime).toLocaleDateString()}
-                                    </span>
+                                    <Link className='w-full border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100' to={`/portal/editpost/${post._id}`}>Edit Post</Link>
+
                                 </div>
                             </div>
                         </div>
