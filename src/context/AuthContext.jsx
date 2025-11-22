@@ -22,29 +22,29 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log('Authentication state:', isAuthenticated);
+    // console.log('Authentication state:', isAuthenticated);
   }, [isAuthenticated]);
 
   const checkAuthStatus = async () => {
     try {
       setIsLoading(true);
       const response = await api.get('/api/auth/check-cookie');
-      
+
       if (response.status === 200 || response.status === 201) {
-        console.log('Auth check successful');
+        // console.log('Auth check successful');
         setIsAuthenticated(true);
         if (window.location.pathname === '/auth/login') {
           navigate('/portal');
         }
       } else {
-        console.log('Auth check failed');
+        // console.log('Auth check failed');
         setIsAuthenticated(false);
         if (window.location.pathname.startsWith('/portal')) {
           navigate('/auth/login');
         }
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      // console.error('Auth check failed:', error);
       setIsAuthenticated(false);
       if (window.location.pathname.startsWith('/portal')) {
         navigate('/auth/login');

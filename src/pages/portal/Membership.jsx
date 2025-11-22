@@ -11,13 +11,13 @@ const Membership = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  
+
   const navigate = useNavigate();
   const { fetchProfileData } = useProfileContext();
 
   const paymentAccounts = {
-    jazzcash: '+92 301 1234567',
-    easypaisa: '+92 302 7654321'
+    jazzcash: '03015507933'
+
   };
 
   const handleImageUpload = (e) => {
@@ -36,12 +36,12 @@ const Membership = () => {
       setError('Please select a payment method');
       return;
     }
-    
+
     if (step === 2 && !phoneNumber) {
       setError('Please enter your phone number');
       return;
     }
-    
+
     setError('');
     setStep(step + 1);
   };
@@ -101,7 +101,7 @@ const Membership = () => {
   return (
     <div className="max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold mb-6 text-center">Membership Payment</h1>
-      
+
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between">
@@ -120,8 +120,8 @@ const Membership = () => {
         </div>
         <div className="relative mt-2">
           <div className="h-2 bg-gray-200 rounded-full">
-            <div 
-              className="h-2 bg-blue-600 rounded-full transition-all duration-300" 
+            <div
+              className="h-2 bg-blue-600 rounded-full transition-all duration-300"
               style={{ width: `${(step - 1) * 50}%` }}
             ></div>
           </div>
@@ -139,9 +139,9 @@ const Membership = () => {
       {step === 1 && (
         <div className="space-y-6">
           <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div 
+            <div
               className={`p-4 border rounded-lg cursor-pointer hover:border-blue-500 transition-all ${paymentMethod === 'jazzcash' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
               onClick={() => setPaymentMethod('jazzcash')}
             >
@@ -154,8 +154,8 @@ const Membership = () => {
                 <span className="font-medium">JazzCash</span>
               </div>
             </div>
-            
-            <div 
+
+            <div
               className={`p-4 border rounded-lg cursor-pointer hover:border-blue-500 transition-all ${paymentMethod === 'easypaisa' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
               onClick={() => setPaymentMethod('easypaisa')}
             >
@@ -175,7 +175,7 @@ const Membership = () => {
               <h3 className="font-medium mb-2">Send Rs. 500 to this account:</h3>
               <div className="flex items-center justify-between p-3 bg-white border rounded-lg">
                 <span className="font-mono">{paymentAccounts[paymentMethod]}</span>
-                <button 
+                <button
                   className="text-blue-600 hover:text-blue-800"
                   onClick={() => {
                     navigator.clipboard.writeText(paymentAccounts[paymentMethod]);
@@ -194,7 +194,7 @@ const Membership = () => {
       {step === 2 && (
         <div className="space-y-6">
           <h2 className="text-xl font-semibold mb-4">Your Payment Details</h2>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Your Phone Number (where you sent the payment from)
@@ -223,7 +223,7 @@ const Membership = () => {
       {step === 3 && (
         <div className="space-y-6">
           <h2 className="text-xl font-semibold mb-4">Upload Payment Proof</h2>
-          
+
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
             <div className="text-center">
               {proofImage ? (
@@ -235,11 +235,11 @@ const Membership = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
               )}
-              
+
               <p className="mt-2 text-sm text-gray-500">
                 Upload a screenshot of your payment receipt
               </p>
-              
+
               <input
                 type="file"
                 accept="image/*"
@@ -247,7 +247,7 @@ const Membership = () => {
                 className="hidden"
                 id="proof-upload"
               />
-              
+
               <label htmlFor="proof-upload" className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700">
                 {proofImage ? 'Change Image' : 'Upload Image'}
               </label>
