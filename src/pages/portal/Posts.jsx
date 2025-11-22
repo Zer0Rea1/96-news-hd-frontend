@@ -86,6 +86,15 @@ const Posts = () => {
                                         onDelete={handleDeleteSuccess}  // Passing the function as prop
                                     />
                                     <Link className='w-full border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100' to={`/portal/editpost/${post._id}`}>Edit Post</Link>
+                                    <button
+                                        className="w-full border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(`https://96-news-hd-backend.netlify.app/post/${post._id}`);
+                                            alert('Post Link is copied to clipboard!');
+                                        }}
+                                    >
+                                        Share
+                                    </button>
 
                                 </div>
                             </div>

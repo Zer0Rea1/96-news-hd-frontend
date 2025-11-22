@@ -88,6 +88,15 @@ const PostPage = () => {
           {post.post.category}
         </span>
         <p className="normal-font text-sm text-gray-500">{post.authorname}</p>
+        <button
+          className=" border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100"
+          onClick={() => {
+            navigator.clipboard.writeText(`https://96-news-hd-backend.netlify.app/post/${post.post._id}`);
+            alert('Post Link is copied to clipboard!');
+          }}
+        >
+          Share
+        </button>
         <hr className="my-5" />
         <div
           className="text-base sm:text-lg font-jameel-noori leading-8 sm:leading-10"
