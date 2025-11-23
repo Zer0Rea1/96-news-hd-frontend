@@ -1,21 +1,14 @@
-import { React, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { React, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import brand from '../assets/96news.jpg';
-import api from '../api/apis'; // Make sure this path is correct
-import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // for redirect
+  const navigate = useNavigate();
 
-  const handleSearch = async (e) => {
-  
+  const handleSearch = () => {
     navigate(`/search`);
   };
 
-  // Array of navigation items
   const navItems = [
     { route: '/page/latest-news', name: 'تازہ ترین', type: 'link' },
     { route: '/page/pakistan-news', name: 'پاکستان', type: 'link' },
@@ -26,63 +19,35 @@ const Header = () => {
     { route: '/page/science-news', name: 'سائنس', type: 'link' },
   ];
 
-  // Function to toggle the search bar
-  const toggleSearchBar = (e) => {
-    const searchInput = document.querySelector('.search-input');
-    searchInput.classList.toggle('hidden');
-    searchInput.focus();
-  };
-
   return (
-    <header className="bg-red-600 text-white p-4 shadow-md">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
+    <header className="bg-red-700 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-opacity-95 border-b-4 border-red-900">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center p-2">
         {/* Brand Logo */}
-        <Link to="/" className="text-3xl font-bold font-jameel-noori mb-4 md:mb-0">
-          <img src={brand} alt="96 News HD" className="h-12" />
+        <Link to="/" className="flex items-center gap-3 group">
+          <img
+            src={brand}
+            alt="96 News HD"
+            className="h-14 w-auto rounded-lg shadow-md transform group-hover:scale-105 transition-transform duration-300"
+          />
         </Link>
 
         {/* Navigation */}
-        <nav>
-          <ul className="flex flex-wrap justify-center space-x-2 md:space-x-4 items-center">
+        <nav className="mt-4 md:mt-0 w-full md:w-auto">
+          <ul className="flex flex-wrap justify-center md:justify-end items-center gap-2 md:gap-1">
             {/* Search Icon */}
-            <li className="p-3 cursor-pointer" onClick={handleSearch}>
-              <i className="fa-solid fa-magnifying-glass text-xl hover:text-red-300 transition-colors duration-300"></i>
+            <li className="p-2 cursor-pointer rounded-full hover:bg-red-800 transition-colors duration-300" onClick={handleSearch}>
+              <i className="fa-solid fa-magnifying-glass text-xl"></i>
             </li>
 
-            {/* Search Input */}
-            {/* <form onSubmit={handleSearch}>
-
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                type="text"
-                className="search-input rtl hidden bg-red-400 border-2 border-red-700 rounded-lg px-4 py-2 text-white placeholder-gray-200 focus:outline-none focus:border-red-900 transition-all duration-300"
-                placeholder="...Search"
-              />
-
-              <button
-                type="submit"
-                className="ml-2 bg-white text-red-600 px-3 py-1 rounded font-bold"
-              >
-                تلاش
-              </button>
-            </form> */}
-
-            {/* Dynamically Render Navigation Items */}
+            {/* Navigation Items */}
             {navItems.map((item, index) => (
               <li key={index}>
-                {item.type === 'link' ? (
-                  <Link
-                    to={item.route}
-                    className="font-jameel-noori text-2xl hover:bg-red-700 px-3 py-2 rounded"
-                  >
-                    {item.name}
-                  </Link>
-                ) : (
-                  <button className="font-jameel-noori font-bold text-lg hover:bg-red-700 px-3 py-2 rounded">
-                    {item.name}
-                  </button>
-                )}
+                <Link
+                  to={item.route}
+                  className="font-jameel-noori text-xl md:text-2xl px-3 py-2 rounded-lg hover:bg-white hover:text-red-700 transition-all duration-300 block"
+                >
+                  {item.name}
+                </Link>
               </li>
             ))}
           </ul>

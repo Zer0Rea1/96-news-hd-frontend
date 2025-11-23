@@ -21,7 +21,7 @@ export function ProfileProvider({ children }) {
     isLoading: true,
     error: null
   });
-  
+
   const { isAuthenticated } = useAuthContext();
 
   // Fetch profile data when authenticated
@@ -41,9 +41,9 @@ export function ProfileProvider({ children }) {
   const fetchProfileData = async () => {
     try {
       setProfileState(prev => ({ ...prev, isLoading: true, error: null }));
-      
+
       const response = await api.get('/api/profile');
-      
+
       if (response.status === 200) {
         setProfileState({
           profile: response.data.profile,
@@ -67,9 +67,9 @@ export function ProfileProvider({ children }) {
   const updateProfile = async (profileData) => {
     try {
       setProfileState(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      const response = await api.put('/api/profile', profileData);
-      
+
+      const response = await api.put('/api/profile/update', profileData);
+
       if (response.status === 200) {
         setProfileState({
           profile: response.data.profile,

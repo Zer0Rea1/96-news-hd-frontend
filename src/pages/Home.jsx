@@ -1,97 +1,110 @@
-import {useState,useEffect,React} from "react";
+import { useState, useEffect, React } from "react";
 import NewsSection from "../components/NewsSection";
 import LatestNewsSidebar from "../components/LatestNewsSidebar";
 import api from "../api/apis";
-const Home = () => {
-  const [Loading, setLoading] = useState(true)
-  const [News, setNews] = useState([])
-  useEffect(() => {
-     const getPosts = async () => {
-            try {
-                setLoading(true);
-                const response = await api.get('/api/getpost');
-                setNews(response.data.posts);
-            } catch (err) {
-                console.error('posts request fetch error:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        getPosts()
-  }, [])
-  
+const Home = () => {
+  const [loading, setLoading] = useState(true);
+  const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    const getPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/api/getpost');
+        setNews(response.data.posts);
+      } catch (err) {
+        console.error('posts request fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getPosts();
+  }, []);
 
   const filterNews = (Type) => {
-    const filteredNews = News.filter((item) => item.category.includes(Type))
+    const filteredNews = news.filter((item) => item.category.includes(Type));
     return filteredNews;
-  }
+  };
+
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
-          <section className="mb-8">
-            
-            <NewsSection news={News} category={'latest-news'} loading={Loading} section_name="اہم ترین خبریں"/>
-            
-            
-          </section>
-          <section className="mb-8">
-            
-            <NewsSection news={filterNews('pakistan-news')} loading={Loading} section_name="پاکستان" category="pakistan-news"/>
-          
-          </section>
-          <section className="mb-8">
-            <NewsSection news={filterNews('international-news')} loading={Loading} section_name="دنیا" category="international-news"/>
+    <div className="bg-gray-50 min-h-screen">
+      <div className="container mx-auto py-12 px-4 md:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Content Area */}
+          <div className="lg:col-span-8 space-y-12">
+            <section>
+              <NewsSection
+                news={news}
+                category={'latest-news'}
+                loading={loading}
+                section_name="اہم ترین خبریں"
+              />
+            </section>
 
-          </section>
-          <section className="mb-8">
-            <NewsSection news={filterNews('sports-news')} loading={Loading} section_name="کھیل" category="sports-news"/>
+            <section>
+              <NewsSection
+                news={filterNews('pakistan-news')}
+                loading={loading}
+                section_name="پاکستان"
+                category="pakistan-news"
+              />
+            </section>
 
-          </section>
-          <section className="mb-8">
-            <NewsSection news={filterNews('business-news')} loading={Loading} section_name="کاروبار" category="business-news"/>
+            <section>
+              <NewsSection
+                news={filterNews('international-news')}
+                loading={loading}
+                section_name="دنیا"
+                category="international-news"
+              />
+            </section>
 
-          </section>
-          <section className="mb-8">
-            <NewsSection news={filterNews('health-news')} loading={Loading} section_name="صحت" category="health-news"/>
+            <section>
+              <NewsSection
+                news={filterNews('sports-news')}
+                loading={loading}
+                section_name="کھیل"
+                category="sports-news"
+              />
+            </section>
 
-          </section>
-          <section className="mb-8">
-            <NewsSection news={filterNews('science-news')} loading={Loading} section_name="سائنس" category="science-news"/>
+            <section>
+              <NewsSection
+                news={filterNews('business-news')}
+                loading={loading}
+                section_name="کاروبار"
+                category="business-news"
+              />
+            </section>
 
-          </section>
-        </div>
-        <div className="md:col-span-1">
-        <LatestNewsSidebar latestNews={News} loading={Loading} />
+            <section>
+              <NewsSection
+                news={filterNews('health-news')}
+                loading={loading}
+                section_name="صحت"
+                category="health-news"
+              />
+            </section>
+
+            <section>
+              <NewsSection
+                news={filterNews('science-news')}
+                loading={loading}
+                section_name="سائنس"
+                category="science-news"
+              />
+            </section>
+          </div>
+
+          {/* Sidebar Area */}
+          <div className="lg:col-span-4 relative">
+            <LatestNewsSidebar latestNews={news} loading={loading} />
+          </div>
         </div>
       </div>
     </div>
-  );
-};
-
-
-const NewsSectionSkeleton = () => {
-  return (
-    <>
-      <section className="mb-8 bg-white">
-        {/* <h2 className="bg-gray-300 animate-pulse h-12 rounded mb-6 pr-4"></h2> */}
-
-        <div className="bg-gray-200 animate-pulse shadow-md rounded-lg p-4 mb-4">
-          <div className="bg-gray-300 animate-pulse w-full h-48 rounded-lg"></div>
-          <h3 className="bg-gray-300 animate-pulse h-6 mt-2 mb-4 rounded"></h3>
-          <p className="bg-gray-300 animate-pulse h-12 leading-[2.5rem] rounded"></p>
-        </div>
-
-        <div className="bg-gray-200 animate-pulse shadow-md rounded-lg p-4 mb-4">
-          <div className="bg-gray-300 animate-pulse w-full h-48 rounded-lg"></div>
-          <h3 className="bg-gray-300 animate-pulse h-6 mt-2 mb-4 rounded"></h3>
-          <p className="bg-gray-300 animate-pulse h-12 leading-[2.5rem] rounded"></p>
-        </div>
-
-        {/* <Link className="bg-gray-300 animate-pulse h-8 w-full text-center block text-red-500 underline text-xl rounded"></Link> */}
-      </section>
-    </>
   );
 };
 

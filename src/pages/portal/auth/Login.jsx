@@ -32,7 +32,7 @@ const Login = () => {
 
             if (response.status === 200 || response.status === 201) {
                 setIsAuthenticated(true);
-                navigate('/portal');
+                navigate('/portal/dashboard');
             }
         } catch (err) {
             console.error("Login error:", err);

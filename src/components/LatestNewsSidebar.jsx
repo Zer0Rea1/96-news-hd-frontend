@@ -1,58 +1,61 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Brand from '../assets/96news.jpg';
+import { Link } from 'react-router-dom';
+
 const LatestNewsSidebar = React.memo(({ latestNews, loading }) => {
-  const navigate = useNavigate();
-
-
   return (
-    <>
-      <h2 className="font-jameel-noori text-[25px] mb-4 border-r-4 border-red-600 h-12 pr-4">تازہ ترین خبریں</h2>
-      <div className="bg-gray-100 shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-300 sticky top-2">
+    <div className="sticky top-24">
+      <div className="flex items-center mb-6 border-r-4 border-red-600 pr-4">
+        <h2 className="font-jameel-noori text-2xl font-bold text-gray-800">
+          تازہ ترین خبریں
+        </h2>
+      </div>
 
-        {loading ? <HtmlComponent /> :
-          <ul className="space-y-2">
-            {latestNews.slice(0, 5).map((item, index) => (
-              <li key={index} className="font-jameel-noori text-lg border-b border-gray-200 pb-6 last:border-b-0">
+      <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
+        <div className="bg-red-600 h-1 w-full"></div>
 
-                <Link to={`/news/${item._id}`} reloadDocument className="hover:text-red-600 transition-colors duration-300">
-                  {item.title}
+        {loading ? (
+          <SidebarSkeleton />
+        ) : (
+          <ul className="divide-y divide-gray-100">
+            {latestNews.slice(0, 8).map((item, index) => (
+              <li key={index} className="group hover:bg-red-50 transition-colors duration-200">
+                <Link
+                  to={`/news/${item._id}`}
+                  reloadDocument
+                  className="block p-4"
+                >
+                  <div className="flex gap-3">
+                    <span className="font-bold text-red-200 text-xl group-hover:text-red-600 transition-colors">
+                      {index + 1}.
+                    </span>
+                    <h3 className="font-jameel-noori text-lg text-gray-700 group-hover:text-red-700 leading-relaxed transition-colors">
+                      {item.title}
+                    </h3>
+                  </div>
                 </Link>
               </li>
             ))}
           </ul>
-        }
+        )}
       </div>
-    </>
+    </div>
   );
 });
 
-export default LatestNewsSidebar;
-
-
-const HtmlComponent = () => {
+const SidebarSkeleton = () => {
   return (
-    <>
-      <div className="bg-white p-4">
-        <ul className="space-y-2">
-          <li className="animate-pulse border-b border-gray-200 pb-6 last:border-b-0">
-            <div className="bg-gray-300 h-6 w-3/4 rounded"></div>
-          </li>
-          <li className="animate-pulse border-b border-gray-200 pb-6 last:border-b-0">
-            <div className="bg-gray-300 h-6 w-3/4 rounded"></div>
-          </li>
-          <li className="animate-pulse border-b border-gray-200 pb-6 last:border-b-0">
-            <div className="bg-gray-300 h-6 w-3/4 rounded"></div>
-          </li>
-          <li className="animate-pulse border-b border-gray-200 pb-6 last:border-b-0">
-            <div className="bg-gray-300 h-6 w-3/4 rounded"></div>
-          </li>
-          <li className="animate-pulse border-b border-gray-200 pb-6 last:border-b-0">
-            <div className="bg-gray-300 h-6 w-3/4 rounded"></div>
-          </li>
-        </ul>
-      </div>
-    </>
+    <div className="p-4 space-y-4">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div key={i} className="flex gap-3 animate-pulse">
+          <div className="w-6 h-6 bg-gray-200 rounded"></div>
+          <div className="flex-1 space-y-2">
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 
+export default LatestNewsSidebar;

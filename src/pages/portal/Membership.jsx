@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProfileContext } from '../../context/ProfileContext';
 import api from '../../api/apis';
+import { CreditCard, Phone, Upload, CheckCircle, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
 
 const Membership = () => {
   const [step, setStep] = useState(1);
@@ -17,7 +18,6 @@ const Membership = () => {
 
   const paymentAccounts = {
     jazzcash: '03015507933'
-
   };
 
   const handleImageUpload = (e) => {
@@ -70,8 +70,6 @@ const Membership = () => {
       });
 
       if (response.status === 201) {
-        // await fetchProfileData(); // Refresh profile data
-        // navigate('/portal/login');
         setIsSubmitted(true)
       }
     } catch (err) {
@@ -83,222 +81,214 @@ const Membership = () => {
 
   if (isSubmitted) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
-          <div className="text-green-500 text-2xl mb-4">✓</div>
-          <h2 className="text-xl font-bold mb-4">Payment Submitted Successfully</h2>
-          <p className="mb-6">
+      <div className="min-h-[60vh] flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg max-w-md w-full text-center border border-gray-100 dark:border-gray-700">
+          <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
+          </div>
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Payment Submitted!</h2>
+          <p className="mb-8 text-gray-600 dark:text-gray-300">
             Your payment application has been submitted. Please wait 2-3 hours for us to review your submission.
           </p>
-          <p className="text-gray-500 text-sm">
-            You will be automatically redirected to your dashboard...
-          </p>
+          <button
+            onClick={() => navigate('/portal/dashboard')}
+            className="w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+          >
+            Go to Dashboard
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center">Membership Payment</h1>
-
-      {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex justify-between">
-          <div className={`text-center ${step >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center ${step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>1</div>
-            <p className="mt-2">Select Payment</p>
-          </div>
-          <div className={`text-center ${step >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center ${step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>2</div>
-            <p className="mt-2">Your Details</p>
-          </div>
-          <div className={`text-center ${step >= 3 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center ${step >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>3</div>
-            <p className="mt-2">Proof Upload</p>
-          </div>
-        </div>
-        <div className="relative mt-2">
-          <div className="h-2 bg-gray-200 rounded-full">
-            <div
-              className="h-2 bg-blue-600 rounded-full transition-all duration-300"
-              style={{ width: `${(step - 1) * 50}%` }}
-            ></div>
-          </div>
-        </div>
+    <div className="max-w-3xl mx-auto">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Premium Membership</h1>
+        <p className="text-gray-500 dark:text-gray-400">Unlock exclusive features and content.</p>
       </div>
 
-      {/* Error Message */}
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-          {error}
-        </div>
-      )}
-
-      {/* Step 1: Payment Method Selection */}
-      {step === 1 && (
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+        {/* Progress Bar */}
+        <div className="bg-gray-50 dark:bg-gray-700/30 p-6 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex justify-between items-center relative">
+            {/* Progress Line */}
+            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 dark:bg-gray-600 -z-10 rounded-full"></div>
             <div
-              className={`p-4 border rounded-lg cursor-pointer hover:border-blue-500 transition-all ${paymentMethod === 'jazzcash' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-              onClick={() => setPaymentMethod('jazzcash')}
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
-                  {paymentMethod === 'jazzcash' && (
-                    <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
-                  )}
-                </div>
-                <span className="font-medium">JazzCash</span>
-              </div>
-            </div>
+              className="absolute top-1/2 left-0 h-1 bg-blue-600 -z-10 rounded-full transition-all duration-300"
+              style={{ width: `${((step - 1) / 2) * 100}%` }}
+            ></div>
 
-            <div
-              className={`p-4 border rounded-lg cursor-pointer hover:border-blue-500 transition-all ${paymentMethod === 'easypaisa' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-              onClick={() => setPaymentMethod('easypaisa')}
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
-                  {paymentMethod === 'easypaisa' && (
-                    <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
-                  )}
+            {/* Steps */}
+            {[
+              { num: 1, icon: CreditCard, label: 'Payment' },
+              { num: 2, icon: Phone, label: 'Details' },
+              { num: 3, icon: Upload, label: 'Proof' }
+            ].map((s) => (
+              <div key={s.num} className="flex flex-col items-center bg-white dark:bg-gray-800 px-2">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${step >= s.num
+                    ? 'bg-blue-600 border-blue-600 text-white'
+                    : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-400'
+                  }`}>
+                  <s.icon className="w-5 h-5" />
                 </div>
-                <span className="font-medium">EasyPaisa</span>
+                <span className={`text-xs font-medium mt-2 ${step >= s.num ? 'text-blue-600' : 'text-gray-400'
+                  }`}>{s.label}</span>
               </div>
-            </div>
+            ))}
           </div>
+        </div>
 
-          {paymentMethod && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-medium mb-2">Send Rs. 500 to this account:</h3>
-              <div className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                <span className="font-mono">{paymentAccounts[paymentMethod]}</span>
-                <button
-                  className="text-blue-600 hover:text-blue-800"
-                  onClick={() => {
-                    navigator.clipboard.writeText(paymentAccounts[paymentMethod]);
-                    alert('Number copied to clipboard!');
-                  }}
-                >
-                  Copy
-                </button>
+        <div className="p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5" />
+              {error}
+            </div>
+          )}
+
+          {/* Step 1: Payment Method */}
+          {step === 1 && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Select Payment Method</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {['jazzcash', 'easypaisa'].map((method) => (
+                  <div
+                    key={method}
+                    onClick={() => setPaymentMethod(method)}
+                    className={`p-6 border-2 rounded-xl cursor-pointer transition-all flex items-center gap-4 ${paymentMethod === method
+                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                      }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-blue-600' : 'border-gray-300'
+                      }`}>
+                      {paymentMethod === method && <div className="w-3 h-3 bg-blue-600 rounded-full" />}
+                    </div>
+                    <span className="font-bold text-lg capitalize text-gray-800 dark:text-gray-200">{method}</span>
+                  </div>
+                ))}
+              </div>
+
+              {paymentMethod && (
+                <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-100 dark:border-gray-700">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Send <span className="font-bold text-gray-900 dark:text-white">Rs. 500</span> to:</p>
+                  <div className="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <span className="font-mono text-lg font-bold text-gray-900 dark:text-white tracking-wider">
+                      {paymentAccounts[paymentMethod]}
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(paymentAccounts[paymentMethod]);
+                        // toast.success('Copied!'); // Assuming toast is available
+                      }}
+                      className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 2: Details */}
+          {step === 2 && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Payment Details</h2>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Sender Phone Number
+                </label>
+                <input
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="03XX XXXXXXX"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                />
+                <p className="mt-2 text-sm text-gray-500">Enter the number from which you sent the payment.</p>
+              </div>
+
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">Summary</h3>
+                <div className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
+                  <div className="flex justify-between">
+                    <span>Method:</span>
+                    <span className="font-medium capitalize">{paymentMethod}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Amount:</span>
+                    <span className="font-medium">Rs. 500</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
-        </div>
-      )}
 
-      {/* Step 2: Customer Details */}
-      {step === 2 && (
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold mb-4">Your Payment Details</h2>
+          {/* Step 3: Proof */}
+          {step === 3 && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Upload Proof</h2>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Your Phone Number (where you sent the payment from)
-            </label>
-            <input
-              type="text"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="+92 3XX XXXXXXX"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-medium mb-2">Payment Summary:</h3>
-            <ul className="space-y-2">
-              <li>Payment Method: <span className="font-medium capitalize">{paymentMethod}</span></li>
-              <li>Amount: <span className="font-medium">Rs. 500</span></li>
-              <li>To: <span className="font-mono">{paymentAccounts[paymentMethod]}</span></li>
-            </ul>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Proof Upload */}
-      {step === 3 && (
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold mb-4">Upload Payment Proof</h2>
-
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-            <div className="text-center">
-              {proofImage ? (
-                <div className="mb-4">
-                  <img src={proofImage} alt="Payment Proof" className="max-h-64 mx-auto" />
-                </div>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-              )}
-
-              <p className="mt-2 text-sm text-gray-500">
-                Upload a screenshot of your payment receipt
-              </p>
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                id="proof-upload"
-              />
-
-              <label htmlFor="proof-upload" className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700">
-                {proofImage ? 'Change Image' : 'Upload Image'}
-              </label>
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-8 text-center hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                {proofImage ? (
+                  <div className="relative inline-block">
+                    <img src={proofImage} alt="Proof" className="max-h-64 rounded-lg shadow-md" />
+                    <button
+                      onClick={() => setProofImage(null)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="cursor-pointer block">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">Click to upload screenshot</p>
+                    <p className="text-sm text-gray-500 mt-1">PNG, JPG up to 5MB</p>
+                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                  </label>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-medium mb-2">Payment Summary:</h3>
-            <ul className="space-y-2">
-              <li>Payment Method: <span className="font-medium capitalize">{paymentMethod}</span></li>
-              <li>From Phone Number: <span className="font-mono">{phoneNumber}</span></li>
-              <li>Amount: <span className="font-medium">Rs. 500</span></li>
-              <li>To: <span className="font-mono">{paymentAccounts[paymentMethod]}</span></li>
-            </ul>
+          {/* Navigation */}
+          <div className="mt-10 flex justify-between pt-6 border-t border-gray-100 dark:border-gray-700">
+            {step > 1 ? (
+              <button
+                onClick={handleBack}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-medium"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+            ) : (
+              <div></div>
+            )}
+
+            {step < 3 ? (
+              <button
+                onClick={handleNext}
+                className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-lg shadow-blue-600/30"
+              >
+                Next <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="flex items-center gap-2 px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium shadow-lg shadow-green-600/30 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Submitting...' : 'Submit Payment'}
+                {!loading && <CheckCircle className="w-4 h-4" />}
+              </button>
+            )}
           </div>
         </div>
-      )}
-
-      {/* Navigation Buttons */}
-      <div className="mt-8 flex justify-between">
-        {step > 1 ? (
-          <button
-            onClick={handleBack}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
-            Back
-          </button>
-        ) : (
-          <div></div>
-        )}
-
-        {step < 3 ? (
-          <button
-            onClick={handleNext}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
-            disabled={loading}
-          >
-            Next
-          </button>
-        ) : (
-          <button
-            onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
-            disabled={loading}
-          >
-            {loading ? 'Submitting...' : 'Submit Payment'}
-          </button>
-        )}
       </div>
     </div>
   );
 };
 
-export default Membership; 
+export default Membership;

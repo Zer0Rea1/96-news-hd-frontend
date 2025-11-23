@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import api from '../../api/apis';
-import { useProfileContext } from '../../context/ProfileContext.jsx';
 import { useAuthContext } from '../../context/AuthContext';
-import DeletePostButton from '../../components/portal/components/DeletePostButton.jsx';
-import EditPostForm from '../../components/portal/components/EditPostForm.jsx';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import {
+    Search,
+    Filter,
+    MoreVertical,
+    Edit2,
+    Trash2,
+    Share2,
+    Eye,
+    Plus
+} from 'lucide-react';
+import { toast } from 'react-toastify';
+
 const Posts = () => {
-    const [posts, setPosts] = useState([])
-    const [loading, setLoading] = useState(true)
-    const { profile, isLoading } = useProfileContext();
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
     const { isAuthenticated } = useAuthContext();
-    const handleUpdateSuccess = (updatedPost) => {
-        setPosts(posts.map(post =>
-            post._id === updatedPost._id ? updatedPost : post
-        ));
-    };
-    const handleDeleteSuccess = (deletedPostId) => {
-        // Update state to remove the deleted post
-        setPosts(posts.filter(post => post._id !== deletedPostId));
-    };
 
     useEffect(() => {
         const getPosts = async () => {
@@ -27,7 +27,8 @@ const Posts = () => {
                 const response = await api.get('/api/getPostByuser');
                 setPosts(response.data);
             } catch (err) {
-                console.error('Payment request fetch error:', err);
+                console.error('Fetch error:', err);
+                toast.error('Failed to fetch posts');
             } finally {
                 setLoading(false);
             }
@@ -38,72 +39,154 @@ const Posts = () => {
         }
     }, [isAuthenticated]);
 
+    const handleDelete = async (postId) => {
+        if (window.confirm('Are you sure you want to delete this post?')) {
+            try {
+                const response = await api.delete(`/api/delete/${postId}`);
+                if (response.status === 200) {
+                    setPosts(posts.filter(post => post._id !== postId));
+                    toast.success('Post deleted successfully');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                toast.error('Failed to delete post');
+            }
+        }
+    };
+
+    const handleShare = (postId) => {
+        navigator.clipboard.writeText(`https://96newshd.vercel.app/news/${postId}`);
+        toast.success('Link copied to clipboard!');
+    };
+
+    const filteredPosts = posts.filter(post =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
-        )
+        );
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">Your Posts</h1>
+        <div className="space-y-6">
+            {/* Header Actions */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Posts</h1>
+                <Link
+                    to="/portal/new-post"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    <Plus className="w-4 h-4" />
+                    <span>Create New</span>
+                </Link>
+            </div>
 
-            {posts.length === 0 ? (
-                <div className="text-center py-12">
-                    <p className="text-gray-500 text-lg">No posts found. Create your first post!</p>
+            {/* Search and Filter */}
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                        type="text"
+                        placeholder="Search posts..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
                 </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {posts.map((post) => (
-                        <div
-                            key={post._id}
-                            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-                        >
-                            <div className="h-48 overflow-hidden">
-                                <img
-                                    src={post.thumbnailImage}
-                                    alt={post.title}
-                                    className="w-full h-full object-cover contain-content"
-                                />
-                            </div>
-                            <div className="p-4">
+                {/* <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+          <Filter className="w-4 h-4" />
+          <span>Filter</span>
+        </button> */}
+            </div>
 
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">{post.title}</h3>
-                                <span className="text-sm text-gray-500 mx-2">
-                                    {new Date(post.dateandtime).toLocaleDateString()}
-                                </span>
-                                <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-2">
-                                    {post.category}
-                                </span>
-                                <div className="flex justify-between items-center mt-2">
-                                    {/* <button className="text-blue-600 hover:text-blue-800 font-medium">
-                                        View Details
-                                    </button> */}
-                                    <DeletePostButton
-                                        postId={post._id}
-                                        onDelete={handleDeleteSuccess}  // Passing the function as prop
-                                    />
-                                    <Link className='w-full border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100' to={`/portal/editpost/${post._id}`}>Edit Post</Link>
-                                    <button
-                                        className="w-full border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100"
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(`https://96-news-hd-backend.netlify.app/post/${post._id}`);
-                                            alert('Post Link is copied to clipboard!');
-                                        }}
-                                    >
-                                        Share
-                                    </button>
-
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+            {/* Posts Table */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead className="bg-gray-50 dark:bg-gray-700/50">
+                            <tr>
+                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Post</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                            {filteredPosts.length === 0 ? (
+                                <tr>
+                                    <td colSpan="4" className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        No posts found matching your search.
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredPosts.map((post) => (
+                                    <tr key={post._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                                                    <img
+                                                        src={post.thumbnailImage}
+                                                        alt=""
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1 max-w-xs" title={post.title}>
+                                                        {post.title}
+                                                    </h3>
+                                                    {/* <span className="text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full mt-1 inline-block">
+                            Published
+                          </span> */}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="px-3 py-1 text-sm rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                                                {post.category}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                            {new Date(post.dateandtime).toLocaleDateString()}
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleShare(post._id)}
+                                                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    title="Share"
+                                                >
+                                                    <Share2 className="w-4 h-4" />
+                                                </button>
+                                                <Link
+                                                    to={`/portal/editpost/${post._id}`}
+                                                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <Edit2 className="w-4 h-4" />
+                                                </Link>
+                                                <button
+                                                    onClick={() => handleDelete(post._id)}
+                                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
                 </div>
-            )}
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default Posts
+export default Posts;
