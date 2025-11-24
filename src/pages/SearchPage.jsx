@@ -28,11 +28,11 @@ const SearchPage = () => {
         <input
           type="text"
           placeholder="Search blog..."
-          className="w-full border px-4 py-2 rounded"
+          className="normal-font ltr w-full border px-4 py-2 rounded"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded">
+        <button type="submit" className="normal-font font-normal bg-red-600 text-white px-4 py-2 rounded">
           Search
         </button>
       </form>

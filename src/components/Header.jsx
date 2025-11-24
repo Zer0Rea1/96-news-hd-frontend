@@ -1,157 +1,168 @@
-import { React, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, Search, Home, Globe, TrendingUp, Activity, Briefcase, Heart, FlaskConical } from 'lucide-react';
 import brand from '../assets/96news.jpg';
-import { Menu, X, ChevronLeft, Home, Globe, TrendingUp, Activity, Briefcase, Heart, FlaskConical } from 'lucide-react';
 
 const Header = () => {
   const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  // 1. Lock Body Scroll when menu is open to prevent background scrolling
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isOpen]);
 
   const handleSearch = () => {
-    navigate(`/search`);
-    setIsMobileMenuOpen(false);
+    setIsOpen(false);
+    navigate('/search');
   };
 
   const navItems = [
-    { route: '/page/latest-news', name: 'تازہ ترین', type: 'link', icon: TrendingUp },
-    { route: '/page/pakistan-news', name: 'پاکستان', type: 'link', icon: Home },
-    { route: '/page/international-news', name: 'دنیا', type: 'link', icon: Globe },
-    { route: '/page/sports-news', name: 'کھیل', type: 'link', icon: Activity },
-    { route: '/page/business-news', name: 'کاروبار', type: 'link', icon: Briefcase },
-    { route: '/page/health-news', name: 'صحت', type: 'link', icon: Heart },
-    { route: '/page/science-news', name: 'سائنس', type: 'link', icon: FlaskConical },
+    { route: '/page/latest-news', name: 'تازہ ترین', icon: TrendingUp },
+    { route: '/page/pakistan-news', name: 'پاکستان', icon: Home },
+    { route: '/page/international-news', name: 'دنیا', icon: Globe },
+    { route: '/page/sports-news', name: 'کھیل', icon: Activity },
+    { route: '/page/business-news', name: 'کاروبار', icon: Briefcase },
+    { route: '/page/health-news', name: 'صحت', icon: Heart },
+    { route: '/page/science-news', name: 'سائنس', icon: FlaskConical },
   ];
 
   return (
-    <header className="bg-red-700 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-opacity-95 border-b-4 border-red-900">
-      <div className="container mx-auto px-4 py-2">
-        <div className="flex justify-between items-center relative">
+    <>
+      {/* --- MAIN HEADER BAR --- */}
+      <header className="sticky top-0 z-40 w-full bg-red-700 text-white shadow-lg border-b-4 border-red-900">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
 
-          {/* Mobile Menu Button (Left) */}
+          {/* Left: Mobile Menu Button */}
           <button
-            className="md:hidden p-2 hover:bg-red-800 rounded-lg transition-colors active:scale-95 transform duration-200"
-            onClick={() => setIsMobileMenuOpen(true)}
+            onClick={() => setIsOpen(true)}
+            className="md:hidden p-2 rounded-lg hover:bg-red-800 transition-colors focus:outline-none"
+            aria-label="Open Menu"
           >
             <Menu className="w-7 h-7" />
           </button>
 
-          {/* Brand Logo (Center on Mobile, Left on Desktop) */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none md:flex-shrink-0">
-            <Link to="/" className="flex items-center gap-3 group">
+          {/* Center: Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" className="block">
               <img
                 src={brand}
                 alt="96 News HD"
-                className="h-10 md:h-14 w-auto rounded-lg shadow-md transform group-hover:scale-105 transition-transform duration-300"
+                className="h-10 md:h-12 w-auto rounded-md shadow-sm"
               />
             </Link>
           </div>
 
-          {/* Search Icon (Right) */}
-          <div className="flex items-center md:hidden">
+          {/* Right: Desktop Nav & Search */}
+          <div className="flex items-center gap-2">
+            {/* Desktop Nav Links */}
+            <nav className="hidden md:flex items-center gap-1">
+              {navItems.map((item, idx) => (
+                <Link
+                  key={idx}
+                  to={item.route}
+                  className="font-jameel-noori px-3 py-2 text-lg hover:bg-white/10 rounded-md transition-colors whitespace-nowrap"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Search Button */}
             <button
-              className="p-2 hover:bg-red-800 rounded-lg transition-colors active:scale-95 transform duration-200"
               onClick={handleSearch}
+              className="p-2 rounded-full hover:bg-red-800 transition-colors"
             >
-              <i className="fa-solid fa-magnifying-glass text-xl"></i>
+              <Search className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 ">
-            <button
-              className="p-2 cursor-pointer rounded-full hover:bg-red-800 transition-colors duration-300 mr-2"
-              onClick={handleSearch}
-            >
-              <i className="fa-solid fa-magnifying-glass text-xl"></i>
-            </button>
-
-            <ul className="flex items-center gap-1">
-              {navItems.map((item, index) => (
-                <li key={index}>
-                  <Link
-                    to={item.route}
-                    className="font-jameel-noori text-xl lg:text-2xl px-3 py-2 rounded-lg hover:bg-white hover:text-red-700 transition-all duration-300 block whitespace-nowrap"
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Sidebar Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-[55] md:hidden backdrop-blur-sm transition-opacity duration-300"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      {/* --- MOBILE SIDEBAR OVERLAY & DRAWER --- */}
 
-      {/* Mobile Sidebar Drawer */}
+      {/* 1. The Dark Backdrop (Only visible when open) */}
       <div
-        className={`fixed top-0 right-0 h-full w-80 bg-white text-gray-800 z-[60] transform transition-transform duration-300 ease-out shadow-2xl md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+          }`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      {/* 2. The Sidebar Drawer */}
+      <div
+        className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[60] shadow-2xl transform transition-transform duration-300 ease-out md:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
       >
         <div className="flex flex-col h-full">
-          {/* Sidebar Header */}
-          <div className="ltr p-6 bg-red-700 text-white flex justify-between items-center shadow-md">
-            <div className="flex items-center gap-3">
-              <img src={brand} alt="Logo" className="h-10 w-auto rounded-md border-2 border-white/20" />
-              <span className="font-bold text-xl tracking-wider">96 NEWS HD</span>
+
+          {/* Header inside Sidebar */}
+          <div className="flex items-center justify-between p-4 bg-red-700 text-white border-b-4 border-red-900">
+            {/* <span className="normal-font text-lg tracking-wider ltr ">96 NEWS HD</span> */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="block">
+                <img
+                  src={brand}
+                  alt="96 News HD"
+                  className="h-10 md:h-12 w-auto rounded-md shadow-sm"
+                />
+              </Link>
             </div>
             <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2 hover:bg-red-600 rounded-full transition-colors active:scale-95"
+              onClick={() => setIsOpen(false)}
+              className="p-1 rounded-full hover:bg-red-600 transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Sidebar Navigation */}
-          <nav className="flex-1  py-4 px-3 bg-gray-50 ">
-            <ul className="space-y-2">
-              {navItems.map((item, index) => {
+          {/* Scrollable Link Area */}
+          <div className="flex-1 overflow-y-auto py-4">
+            <ul className="space-y-1 px-3">
+              {navItems.map((item, idx) => {
+                const Icon = item.icon;
                 return (
-                  <li key={index}>
+                  <li key={idx}>
                     <Link
                       to={item.route}
-                      className="group flex items-center justify-between p-4 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-red-100"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-end gap-4 p-3 rounded-lg hover:bg-red-50 text-gray-800 group transition-colors border-b border-gray-100"
                     >
-                      <div className="w-5 h-5 bg-gray-200 rounded-full"></div>
-                      <div className="flex items-center gap-4 ">
-                        <span className="font-jameel-noori text-xl font-medium text-black group-hover:text-red-700 transition-colors">
-                          {item.name}
-                        </span>
-                        <div className="p-2 bg-red-50 text-red-600 rounded-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                          <div className="w-5 h-5 bg-red-200 rounded-full"></div>
-                        </div>
+                      <span className="font-jameel-noori text-xl font-medium group-hover:text-red-700">
+                        {item.name}
+                      </span>
+                      {/* Icon Container */}
+                      <div className="p-2 bg-gray-100 rounded-full group-hover:bg-red-100 text-gray-500 group-hover:text-red-700 transition-colors">
+                        <Icon size={18} />
                       </div>
                     </Link>
                   </li>
                 );
               })}
             </ul>
-          </nav>
+          </div>
 
-          {/* Sidebar Footer */}
-          <div className="p-6 bg-white border-t border-gray-100">
+          {/* Footer Area */}
+          <div className="p-4 bg-gray-50 border-t border-gray-200">
             <button
               onClick={handleSearch}
-              className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-700 p-3 rounded-xl font-medium hover:bg-red-100 transition-colors mb-4"
+              className="w-full flex items-center justify-center gap-2 bg-red-700 text-white py-3 rounded-xl shadow-sm active:scale-95 transition-transform"
             >
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <span>تلاش کریں</span>
+              <Search size={18} />
+              <span className="font-jameel-noori text-lg">تلاش کریں</span>
             </button>
-            <p className="text-center text-gray-400 text-sm font-jameel-noori ltr">
-              © 2024 96 News HD. All rights reserved.
+            <p className="text-center text-xs text-gray-400 mt-4">
+              © 2024 96 News HD
             </p>
           </div>
+
         </div>
       </div>
-    </header>
+    </>
   );
 };
 

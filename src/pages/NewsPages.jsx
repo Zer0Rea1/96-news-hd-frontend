@@ -83,7 +83,7 @@ const NewsPage = () => {
               className="news-card shadow-2xl p-2 rounded"
             >
               <img
-                className="rounded w-full h-auto object-cover"
+                className="rounded w-full h-40 object-cover"
                 src={item.thumbnailImage}
                 alt=""
               />
@@ -100,7 +100,7 @@ const NewsPage = () => {
         <div className="text-center mt-6">
           <button
             onClick={handleLoadMore}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg shadow transition"
+            className="inline-block font-jameel-noori text-xl text-red-600 border-2 border-red-600 px-8 py-2 rounded-full hover:bg-red-600 hover:text-white transition-all duration-300 normal-font"
             disabled={loading}
           >
             {loading ? "Loading..." : "Load More"}
@@ -152,7 +152,7 @@ const CardSkeleton = () => {
           </div>
         </div>
       </div>
-      
+
     </>
   );
 };

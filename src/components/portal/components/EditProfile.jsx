@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useProfileContext } from '../context/ProfileContext';
+import { useProfileContext } from '../../../context/ProfileContext';
 import { Camera } from 'lucide-react';
 
 const EditProfile = ({ onClose }) => {
     const { profile, updateProfile, isLoading } = useProfileContext();
     const [formData, setFormData] = useState({
         username: '',
-        email: '',
+
         firstName: '',
         lastName: '',
         phoneNumber: '',
@@ -138,11 +138,12 @@ const EditProfile = ({ onClose }) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                                 <input
+                                    disabled
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                             <div>

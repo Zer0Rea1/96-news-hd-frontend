@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useProfileContext } from '../../context/ProfileContext';
-import EditProfile from '../../components/EditProfile';
+import EditProfile from '../../components/portal/components/EditProfile';
 import { User, Mail, Phone, Calendar, MapPin, CreditCard, Clock } from 'lucide-react';
 import { formatDate } from '../../utils/dateFormater';
 
