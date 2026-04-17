@@ -73,13 +73,27 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* Search Button */}
-            <button
-              onClick={handleSearch}
-              className="p-2 rounded-full hover:bg-red-800 transition-colors"
-            >
-              <Search className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
+            {/* LIVE Button & Search Button */}
+            <div className="flex items-center gap-2 md:gap-3 ml-2 border-l border-red-800/50 pl-2">
+              <Link
+                to="/live"
+                className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-black/30 hover:bg-black/50 border border-red-500/30 rounded-lg backdrop-blur-sm transition-all shadow-inner group"
+              >
+                <div className="relative flex items-center justify-center">
+                  <span className="absolute w-3 h-3 bg-red-500 rounded-full animate-ping opacity-75"></span>
+                  <span className="relative w-2.5 h-2.5 bg-red-500 rounded-full shadow-[0_0_8px_#ef4444]"></span>
+                </div>
+                <span className="font-bold  tracking-wider text-sm md:text-base text-red-50 group-hover:text-white mt-0.5">LIVE</span>
+              </Link>
+
+              <button
+                onClick={handleSearch}
+                className="p-2 rounded-full hover:bg-red-800 transition-colors"
+                title="Search"
+              >
+                <Search className="w-5 h-5 md:w-6 md:h-6" />
+              </button>
+            </div>
           </div>
         </div>
       </header>

@@ -1,10 +1,11 @@
-import {React, useEffect} from "react";
+import { React, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { authActions } from './store/auth'
 import api from "./api/apis";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
+import Live from "./pages/Live";
 import NewsPages from "./pages/NewsPages";
 import NewPost from "./pages/portal/NewPost";
 import PortalLayout from "./layouts/PortalLayout";
@@ -12,7 +13,7 @@ import SignUp from "./pages/portal/auth/SignUp";
 import Login from "./pages/portal/auth/Login";
 import { AuthProvider } from './context/AuthContext';
 import { ProfileProvider } from './context/ProfileContext';
-import { ProtectedRoute,CheckAdmin } from './components/ProtectedRoute';
+import { ProtectedRoute, CheckAdmin } from './components/ProtectedRoute';
 import Profile from "./pages/portal/Profile";
 import Membership from "./pages/portal/Membership";
 import PaymentVerify from "./pages/portal/admin/PaymentVerify";
@@ -26,14 +27,14 @@ import Users from "./pages/portal/admin/Users";
 import SearchPage from "./pages/SearchPage";
 function App() {
   const dispatch = useDispatch();
-  
+
   // useEffect(() => {
   //   const checkAuth = async () => {
   //     try {
   //       const response = await api.get("/api/auth/check-cookie", {
   //         withCredentials: true
   //       });
-    
+
   //       if(response.status === 201){
   //         dispatch(authActions.login());
   //       }
@@ -41,10 +42,10 @@ function App() {
   //       console.log("Error checking authentication:", error);
   //     }
   //   };
-    
+
   //   checkAuth();
   // }, [dispatch]);
-  
+
   return (
     <BrowserRouter>
 
@@ -53,25 +54,26 @@ function App() {
           <Routes>
             {/* Main Pages */}
             <Route path="/" element={<MainLayout />}>
-              <Route index element={<Home />}/>
+              <Route index element={<Home />} />
+              <Route path="/live" element={<Live />} />
               <Route path="/news/:slug" element={<PostPage />} />
               <Route path="/page/:slug" element={<NewsPage />} />
               <Route path="/search" element={<SearchPage />} />
-            </Route> 
-             
+            </Route>
+
             {/* Portal pages */}
             <Route path="/portal/" element={
               <ProtectedRoute>
                 <PortalLayout />
               </ProtectedRoute>
             }>
-             
+
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="profile" element={<Profile />} />
               <Route path="new-post" element={<NewPost />} />
               <Route path="posts" element={<Posts />} />
               <Route path="/portal/editpost/:slug" element={<EditPost />} />
-              
+
 
 
 
@@ -85,19 +87,19 @@ function App() {
 
                 <PortalLayout />
               </CheckAdmin>
-              
+
             }>
               <Route path="paymentverify" element={<PaymentVerify />} />
               <Route path="users" element={<Users />} />
-              
+
             </Route>
-            
+
             {/* Auth pages */}
             <Route path="/auth">
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<SignUp />} />
             </Route>
-            
+
             {/* Catch all route */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

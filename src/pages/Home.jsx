@@ -1,6 +1,7 @@
 import { useState, useEffect, React } from "react";
 import NewsSection from "../components/NewsSection";
 import LatestNewsSidebar from "../components/LatestNewsSidebar";
+import LivePlayer from "../components/LivePlayer";
 import api from "../api/apis";
 
 const Home = () => {
@@ -100,6 +101,7 @@ const Home = () => {
 
           {/* Sidebar Area */}
           <div className="lg:col-span-4 relative">
+            <LivePlayer />
             <LatestNewsSidebar latestNews={news} loading={loading} />
           </div>
         </div>
