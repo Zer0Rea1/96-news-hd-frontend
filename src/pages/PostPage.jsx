@@ -91,7 +91,7 @@ const PostPage = () => {
         <button
           className=" border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100"
           onClick={() => {
-            navigator.clipboard.writeText(`https://96-news-hd-backend.netlify.app/post/${post.post._id}`);
+            navigator.clipboard.writeText(`https://api.96newshd.com/post/${post.post._id}`);
             alert('Post Link is copied to clipboard!');
           }}
         >

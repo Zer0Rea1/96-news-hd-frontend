@@ -55,7 +55,7 @@ const Posts = () => {
     };
 
     const handleShare = (postId) => {
-        navigator.clipboard.writeText(`https://96-news-hd-backend.netlify.app/post/${postId}`);
+        navigator.clipboard.writeText(`https://api.96newshd.com/post/${postId}`);
         toast.success('Link copied to clipboard!');
     };
 
