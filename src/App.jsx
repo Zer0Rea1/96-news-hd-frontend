@@ -25,6 +25,8 @@ import { ToastContainer } from 'react-toastify';
 import EditPost from "./pages/portal/EditPost";
 import Users from "./pages/portal/admin/Users";
 import SearchPage from "./pages/SearchPage";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+
 function App() {
   const dispatch = useDispatch();
 
@@ -59,6 +61,7 @@ function App() {
               <Route path="/news/:slug" element={<PostPage />} />
               <Route path="/page/:slug" element={<NewsPage />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Route>
 
             {/* Portal pages */}
