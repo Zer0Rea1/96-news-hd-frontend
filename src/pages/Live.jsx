@@ -35,7 +35,7 @@ const Live = () => {
                     {/* Latest News Area */}
                     <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 
-                        <LatestNewsSidebar latestNews={news} loading={loading} />
+                        <LatestNewsSidebar latestNews={news.slice(0, 10)} loading={loading} />
                     </section>
                 </div>
             </div>
