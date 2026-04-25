@@ -102,7 +102,7 @@ const Home = () => {
           {/* Sidebar Area */}
           <div className="lg:col-span-4 relative">
             <LivePlayer />
-            <LatestNewsSidebar latestNews={news} loading={loading} />
+            <LatestNewsSidebar latestNews={news.slice(0, 10)} loading={loading} />
           </div>
         </div>
       </div>
