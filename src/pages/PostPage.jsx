@@ -87,7 +87,7 @@ const PostPage = () => {
         <span className="normal-font inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mb-2">
           {post.post.category}
         </span>
-        <p className="normal-font text-sm text-gray-500">{post.authorname}</p>
+        <p>Published By:</p><p className="normal-font text-sm text-gray-500">{post.authorname}</p>
         <button
           className=" border-2 m-2 p-2 rounded-xl text-center hover:bg-gray-100"
           onClick={() => {
@@ -97,6 +97,7 @@ const PostPage = () => {
         >
           Share
         </button>
+        <p>Published On:</p><p className="normal-font text-sm text-gray-500">{post.post.createdAt}</p>
         <hr className="my-5" />
         <div
           className="text-base sm:text-lg font-jameel-noori leading-8 sm:leading-10"
