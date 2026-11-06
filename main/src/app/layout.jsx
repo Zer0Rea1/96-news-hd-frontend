@@ -5,7 +5,7 @@ import { categories } from '../data/categories';
 import { SITE_ORIGIN, metadataFor } from '../lib/seo';
 import '../index.css';
 import '../App.css';
-const urdu = Noto_Naskh_Arabic({ subsets: ['arabic', 'latin'], variable: '--font-urdu', display: 'swap' });
+const urdu = Noto_Naskh_Arabic({ subsets: ['arabic'], variable: '--font-urdu', display: 'swap' });
 export const metadata = { metadataBase: new URL(SITE_ORIGIN), ...metadataFor('', '/') };
 export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#bc1924' };
 export default function RootLayout({ children }) {
