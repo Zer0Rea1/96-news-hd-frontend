@@ -3,6 +3,8 @@ import { Link, Navigate, NavLink, Route, Routes } from "react-router-dom";
 import type { Session } from "@supabase/supabase-js";
 import {
   UsersThree,
+  Newspaper,
+  Tag,
   IdentificationCard,
   ArrowUpRight,
   Plus,
@@ -43,6 +45,7 @@ import {
   Status,
   formatDate,
 } from "./components/common";
+import NewsWorkspace, { NewsTags } from "./components/NewsWorkspace";
 import Dialog from "./components/Dialog";
 import ReporterForm from "./components/ReporterForm";
 import QRCodeDialog from "./components/QRCodeDialog";
@@ -80,29 +83,12 @@ function Login() {
   }
   return (
     <div className="login-page">
-      <aside className="login-story">
-        <Brand light />
-        <div>
-          <span className="section-label">96 NEWS HD / PRESSROOM</span>
-          <h1>
-            Behind every story,
-            <br />a trusted identity.
-          </h1>
-          <p>
-            The people who report the news deserve credentials that speak for
-            themselves.
-          </p>
-        </div>
-        <span className="login-bottom">
-          <ShieldCheck size={20} />
-          Official News access
-        </span>
-      </aside>
       <main className="login-main">
         <div className="login-form">
-          <span className="section-label">WELCOME BACK</span>
-          <h2>Enter the pressroom.</h2>
-          <p>Sign in to manage your reporters and credentials.</p>
+          <Brand />
+
+          <h2>Sign in</h2>
+          <p>Sign in to manage news, tags, and reporters.</p>
           <form onSubmit={submit}>
             <label className="field">
               Email address
@@ -306,26 +292,20 @@ function Admin({ session }: { session: Session | null }) {
         >
           <X />
         </button>
-        <div className="workspace-label">WORKSPACE</div>
+
         <nav aria-label="Main navigation">
+          <NavLink to="/admin/news" onClick={() => setMobileMenu(false)}><Newspaper size={21} />News</NavLink>
+          <NavLink to="/admin/tags" onClick={() => setMobileMenu(false)}><Tag size={21} />Tags</NavLink>
           <NavLink to="/admin" end onClick={() => setMobileMenu(false)}>
             <UsersThree size={21} />
             Reporters<span className="nav-count">{counts.all}</span>
           </NavLink>
           <NavLink to="/admin/activity" onClick={() => setMobileMenu(false)}>
             <Clock size={21} />
-            Activity log
+            Reporter activity
           </NavLink>
         </nav>
         <div className="sidebar-bottom">
-          <div className="nfc-sidebar">
-            <ContactlessPayment size={28} />
-            <h3>A card that stays current.</h3>
-            <p>
-              Download a reporter’s QR code from their actions menu and share it
-              with your card designer.
-            </p>
-          </div>
           <div className="workspace-user">
             <div className="user-avatar">N</div>
             <div>
@@ -349,13 +329,13 @@ function Admin({ session }: { session: Session | null }) {
               <List size={23} />
             </button>
             <span className="breadcrumb">
-              Workspace <span>/</span> <strong>Pressroom</strong>
+              Workspace <span>/</span> <strong>Admin</strong>
             </span>
           </div>
           <div className="topbar-right">
             <span className="connection connected">
               <span />
-              Connected workspace
+              API connected
             </span>
             {configured && (
               <button
@@ -400,19 +380,19 @@ function Admin({ session }: { session: Session | null }) {
                 </button>
               )}
               <Routes>
+                <Route path="news" element={<NewsWorkspace />} />
+                <Route path="tags" element={<NewsTags />} />
                 <Route
                   index
                   element={
                     <>
                       <div className="page-heading directory-heading">
                         <div>
-                          <div className="section-label">
-                            YOUR PEOPLE. YOUR CREDIBILITY.
-                          </div>
+
                           <h1>
                             Reporter directory<span>.</span>
                           </h1>
-                          <p>Manage the people who represent 96 News HD.</p>
+                          <p>Manage profiles, credentials, and card links.</p>
                         </div>
                         <div className="directory-heading-actions">
                         <button className="button secondary" disabled={loading || !reporters.length} onClick={() => open("bulk-qr")}>
@@ -428,60 +408,8 @@ function Admin({ session }: { session: Session | null }) {
                         </button>
                         </div>
                       </div>
-                      <div className="stats-grid">
-                        {[
-                          {
-                            label: "Total reporters",
-                            value: counts.all,
-                            icon: UsersThree,
-                            text: "Across your News team",
-                            filter: "all",
-                          },
-                          {
-                            label: "Active credentials",
-                            value: counts.active,
-                            icon: ShieldCheck,
-                            text: "Authorized to report",
-                            filter: "active",
-                          },
-                          {
-                            label: "Expired credentials",
-                            value: counts.expired,
-                            icon: Clock,
-                            text: "Ready for renewal",
-                            filter: "expired",
-                          },
-                          {
-                            label: "Draft profiles",
-                            value: counts.draft,
-                            icon: IdentificationCard,
-                            text: "Not yet published",
-                            filter: "draft",
-                          },
-                        ].map((stat) => (
-                          <button
-                            className={`stat ${stat.filter === filter ? "stat-selected" : ""}`}
-                            key={stat.label}
-                            onClick={() => {
-                              setFilter(stat.filter);
-                              setPage(1);
-                            }}
-                          >
-                            <div className="stat-top">
-                              <span>{stat.label}</span>
-                              <stat.icon size={20} />
-                            </div>
-                            <strong>
-                              {loading
-                                ? "…"
-                                : String(stat.value).padStart(2, "0")}
-                            </strong>
-                            <span className="stat-caption">
-                              {stat.text}
-                              <ArrowUpRight size={14} />
-                            </span>
-                          </button>
-                        ))}
+                      <div className="reporter-counts" aria-label="Reporter status filters">
+                        {([['all', 'All', counts.all], ['active', 'Active', counts.active], ['expired', 'Expired', counts.expired], ['draft', 'Drafts', counts.draft]] as const).map(([value, label, count]) => <button key={value} className={filter === value ? 'selected' : ''} aria-pressed={filter === value} onClick={() => { setFilter(value); setPage(1); }}>{label}<span>{loading ? '…' : count}</span></button>)}
                       </div>
                       {!loading && counts.expiring > 0 && (
                         <aside className="expiry-notice" aria-label="Expiry reminders">
@@ -500,7 +428,7 @@ function Admin({ session }: { session: Session | null }) {
                               <h2>
                                 All reporters <span>{filtered.length}</span>
                               </h2>
-                              <p>Your team’s credentials, at a glance.</p>
+                              <p></p>
                             </div>
                             <button
                               className="icon-button"
@@ -692,7 +620,7 @@ function Admin({ session }: { session: Session | null }) {
                               <h3>
                                 {reporters.length
                                   ? "No matching reporters"
-                                  : "Your News team starts here."}
+                                  : "No reporters yet."}
                               </h3>
                               <p>
                                 {reporters.length

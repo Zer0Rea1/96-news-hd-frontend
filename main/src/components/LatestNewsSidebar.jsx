@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { postLabel, postPath, publishedDate } from '../data/categories';
 import { NewsStatus } from './NewsCard';
@@ -10,12 +10,12 @@ export default function LatestNewsSidebar({ latestNews, loading, error = false, 
       {[0, 1, 2, 3, 4].map(index => <div key={index} className="skeleton-line" />)}
     </div> : error ? <NewsStatus onRetry={onRetry}>خبریں لوڈ نہیں ہو سکیں۔</NewsStatus> : latestNews.length ? <ol>
       {latestNews.slice(0, 6).map(post => <li key={post._id}>
-        <Link to={postPath(post)}>
+        <Link href={postPath(post)}>
           <div className="story-meta"><span>{postLabel(post)}</span><time>{publishedDate(post.dateandtime)}</time></div>
           <h3>{post.title.trim()}</h3>
         </Link>
       </li>)}
     </ol> : <NewsStatus>ابھی کوئی خبر دستیاب نہیں۔</NewsStatus>}
-    <Link className="more-news" to="/page/latest-news">مزید خبریں <ArrowLeft size={16} /></Link>
+    <Link className="more-news" href="/page/latest-news">مزید خبریں <ArrowLeft size={16} /></Link>
   </aside>;
 }

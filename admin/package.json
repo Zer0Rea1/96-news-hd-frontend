@@ -6,7 +6,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && NODE_ENV=production vite build",
     "start": "vite preview --host 0.0.0.0",
-    "test": "bun test tests/domain.test.ts",
+    "test": "bun test tests/domain.test.ts && bun test --preload ./tests/setup.js tests/news.test.tsx",
     "test:browser": "playwright test"
   },
   "dependencies": {
@@ -19,7 +19,8 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "react-router-dom": "7.18.5",
-    "zod": "4.6.7"
+    "zod": "4.6.7",
+    "dompurify": "^3.4.17"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",
@@ -28,7 +29,8 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.2",
     "typescript": "7.0.2",
-    "vite": "8.3.5"
+    "vite": "8.3.5",
+    "jsdom": "^30.1.3"
   },
   "engines": {
     "node": "24.x"

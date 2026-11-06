@@ -1,203 +1,31 @@
 import { afterEach, expect, test } from 'bun:test';
-import { act } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from '../src/App';
-import api from '../src/api/apis';
-import { getPost } from '../src/api/postblog.api';
-import { matchesCategory, mergePosts, publishedDate, postPath } from '../src/data/categories';
-import { articleText, sanitizeArticle } from '../src/utils/article';
-
-const originalAdapter = api.defaults.adapter;
-let root;
-
-function post(index, category = 'pakistan-news') {
-  return { _id: `post-${index}`, title: `خبر نمبر ${index}`, category,
-    article: '<p>پاکستان کی اہم خبر اور تفصیلات</p>', thumbnailImage: 'https://example.com/news.jpg', dateandtime: '2026-06-01T10:00:00Z' };
-}
-
-function respond(config, data) {
-  return { data, status: 200, statusText: 'OK', headers: {}, config };
-}
-
-async function mount(path) {
-  window.history.replaceState({}, '', path);
-  const container = document.createElement('div');
-  document.body.append(container);
-  root = createRoot(container);
-  await act(async () => root.render(<App />));
-}
-
-async function waitFor(check) {
-  for (let attempt = 0; attempt < 100; attempt++) {
-    if (check()) return;
-    await act(async () => { await new Promise(resolve => setTimeout(resolve, 10)); });
-  }
-  throw new Error('UI did not reach the expected state: ' + document.body.textContent.slice(-500));
-}
-
-function button(text) {
-  return [...document.querySelectorAll('button')].find(element => element.textContent.includes(text));
-}
-
-afterEach(async () => {
-  if (root) await act(async () => root.unmount());
-  root = null;
-  document.body.innerHTML = '';
-  api.defaults.adapter = originalAdapter;
+import { sanitizeArticle, articleText } from '../src/utils/article';
+import { matchesCategory, postPath, publishedDate } from '../src/data/categories';
+import { articleMetadata, articleSchema, jsonLd, metadataFor, SITE_ORIGIN } from '../src/lib/seo';
+import { getFeed, getArticle, pageNumber, routeSlug } from '../src/lib/news';
+import sitemap from '../src/app/sitemap';
+import robots from '../src/app/robots';
+const originalFetch = globalThis.fetch;
+afterEach(() => { globalThis.fetch = originalFetch; });
+const post = { _id: 'a1', slug: 'پاکستان-کی-خبر-a1', title: 'پاکستان کی خبر', article: '<p>تفصیل &amp; مزید خبر</p>', thumbnailImage: 'https://res.cloudinary.com/example/image.webp', dateandtime: '2026-11-06T08:00:00Z', tags: [{ id: 't1', slug: 'pakistan', name: 'پاکستان', legacy_category: 'pakistan-news' }] };
+test('server sanitizer removes executable markup and preserves editorial formatting', () => {
+  const cleaned = sanitizeArticle('<p onclick="bad()">خبر<strong>اہم</strong></p><script>alert(1)</script><a href="javascript:bad()">link</a><img src="http://evil.test/a" onerror="bad()">');
+  expect(cleaned).toContain('<strong>اہم</strong>'); expect(cleaned).not.toMatch(/onclick|onerror|javascript:|<script|http:\/\/evil/);
 });
-
-test('article sanitizer keeps editorial formatting and removes executable HTML and style overrides', () => {
-  const clean = sanitizeArticle('<p style="position:fixed" onclick="alert(1)"><strong>خبر</strong><img src="x" onerror="alert(2)"><a href="javascript:alert(3)">لنک</a></p><script>alert(4)</script><iframe src="https://example.com"></iframe>');
-  const element = document.createElement('div');
-  element.innerHTML = clean;
-  expect(element.querySelector('strong').textContent).toBe('خبر');
-  expect(element.querySelector('script, iframe, [onclick], [onerror], [style], [href^="javascript:"]')).toBeNull();
+test('excerpts decode entities, preserve paragraphs, and keep complete Unicode code points', () => { expect(articleText('<p>A &amp; B</p><p>C</p>')).toBe('A & B C'); expect(articleText('🙂🙂🙂', 2)).toBe('🙂🙂…'); });
+test('native Urdu slugs and legacy labels keep stable navigation', () => { expect(postPath(post)).toBe('/news/' + encodeURIComponent(post.slug)); expect(matchesCategory(post, 'pakistan-news')).toBe(true); expect(matchesCategory(post, 'pak')).toBe(false); expect(publishedDate('bad')).toBe(''); });
+test('article metadata contains canonical, social image, Urdu title and publication timestamp', () => { const result = articleMetadata(post); expect(result.title.absolute).toBe('پاکستان کی خبر | 96 News HD | ہر خبر باوثوق'); expect(result.alternates.canonical).toBe(SITE_ORIGIN + postPath(post)); expect(result.description).toBe('تفصیل & مزید خبر'); expect(result.openGraph.type).toBe('article'); expect(result.twitter.images).toEqual([post.thumbnailImage]); expect(result.robots.index).toBe(true); });
+test('search metadata is excluded from indexing', () => { expect(metadataFor('تلاش', '/search', undefined, undefined, true).robots.index).toBe(false); });
+test('structured data cannot terminate its script tag', () => { const result = jsonLd(articleSchema({ ...post, title: '</script><script>bad()</script>' })); expect(result).not.toContain('</script>'); expect(JSON.parse(result).headline).toContain('</script>'); });
+test('pagination rejects malformed or unsafe offsets', () => { for (const value of [undefined, '0', '-1', 'Infinity', '1.5', '999999', ['2']]) expect(pageNumber(value)).toBe(1); expect(pageNumber('12')).toBe(12); });
+test('feed forwards encoded Urdu search, tag and page offset to the shared API', async () => { let seen; globalThis.fetch = async url => { seen = new URL(url); return Response.json({ posts: [post], totalCount: 13 }); }; expect((await getFeed(12, 12, 'pakistan', 'پاکستان & دنیا')).posts).toHaveLength(1); expect(seen.searchParams.get('skip')).toBe('12'); expect(seen.searchParams.get('query')).toBe('پاکستان & دنیا'); expect(seen.searchParams.get('tag')).toBe('pakistan'); });
+test('API failures retain status so missing articles become real 404 responses', async () => { globalThis.fetch = async () => new Response('', { status: 404 }); await expect(getArticle('missing')).rejects.toMatchObject({ status: 404 }); });
+test('malformed feed is rejected at the API boundary', async () => { globalThis.fetch = async () => Response.json({ posts: [{ title: 'missing id' }], totalCount: 1 }); await expect(getFeed()).rejects.toThrow('Invalid news response'); });
+test('sitemap includes all pages of published articles, not private routes', async () => {
+  const seen = []; globalThis.fetch = async url => { const parsed = new URL(url); if (parsed.pathname === '/api/tags') return Response.json({ tags: post.tags }); const offset = Number(parsed.searchParams.get('skip')); seen.push(offset); const posts = Array.from({ length: offset === 0 ? 100 : 1 }, (_, index) => ({ ...post, _id: String(index + offset), slug: 'خبر-' + (index + offset) })); return Response.json({ posts, totalCount: 101 }); };
+  const result = await sitemap(); expect(seen).toEqual([0, 100]); expect(result.filter(row => row.url.includes('/news/'))).toHaveLength(101); expect(result.some(row => /\/admin|\/search|\/live/.test(row.url))).toBe(false); expect(result.some(row => row.url.endsWith('/tag/pakistan'))).toBe(true);
 });
+test('sitemap failure never publishes a misleading partial article list', async () => { globalThis.fetch = async url => new URL(url).pathname === '/api/tags' ? Response.json({ tags: [] }) : Response.json({ posts: [], totalCount: 10 }); await expect(sitemap()).rejects.toThrow('partial sitemap'); });
+test('robots advertises canonical sitemap and excludes private and duplicate search URLs', () => { const result = robots(); expect(result.sitemap).toBe(SITE_ORIGIN + '/sitemap.xml'); expect(result.rules.disallow).toContain('/admin'); expect(result.rules.disallow).toContain('/search'); });
 
-test('excerpts decode entities, preserve paragraph boundaries and do not split Unicode characters', () => {
-  expect(articleText('<p>پاکستان &amp; دنیا</p><p>خبریں</p><script>bad()</script>')).toBe('پاکستان & دنیا خبریں');
-  expect(articleText('<p>😀خبر</p>', 1)).toBe('😀…');
-  expect(articleText(null)).toBe('');
-});
-
-test('category matches are exact, batches deduplicate stories and invalid dates stay empty', () => {
-  expect(matchesCategory(post(1, 'not-pakistan-news'), 'pakistan-news')).toBe(false);
-  expect(matchesCategory(post(1, ['sports-news', 'pakistan-news']), 'pakistan-news')).toBe(true);
-  expect(mergePosts([post(1)], [post(1), post(2)]).map(item => item._id)).toEqual(['post-1', 'post-2']);
-  expect(publishedDate('not-a-date')).toBe('');
-});
-
-test('malformed feed responses fail at the API boundary', async () => {
-  api.defaults.adapter = async config => respond(config, { posts: null, totalCount: 10 });
-  await expect(getPost()).rejects.toThrow('Invalid news response');
-});
-
-test('anonymous homepage renders stories without authentication, editor or live playback', async () => {
-  const calls = [];
-  api.defaults.adapter = async config => {
-    calls.push(config.url);
-    return respond(config, { posts: Array.from({ length: 9 }, (_, index) => post(index)), totalCount: 9 });
-  };
-  await mount('/');
-  expect(document.querySelector('.news-card--lead h2').textContent).toBe('خبر نمبر 0');
-  expect(calls).toEqual(['/api/getpost']);
-  expect(document.title).toBe('96 News HD | ہر خبر باوثوق');
-  expect(document.querySelector('video, a[href="/live"], a[href^="/admin"], a[href^="/portal"], a[href^="/auth"]')).toBeNull();
-});
-
-test('load more uses consecutive offsets; retry retains stories and reuses the failed offset', async () => {
-  const offsets = [];
-  let failOnce = true;
-  api.defaults.adapter = async config => {
-    const offset = config.params.skip;
-    offsets.push(offset);
-    if (offset === 12 && failOnce) { failOnce = false; throw new Error('Connection failed'); }
-    return respond(config, { posts: Array.from({ length: Math.min(12, 25 - offset) }, (_, index) => post(offset + index)), totalCount: 25 });
-  };
-  await mount('/page/latest-news');
-  expect(document.title).toBe('تازہ ترین | 96 News HD | ہر خبر باوثوق');
-  expect(document.querySelectorAll('.listing-page .news-card').length).toBe(12);
-  await act(async () => button('مزید خبریں دیکھیں').click());
-  expect(document.querySelectorAll('.listing-page .news-card').length).toBe(12);
-  await act(async () => button('دوبارہ کوشش کریں').click());
-  expect(document.querySelectorAll('.listing-page .news-card').length).toBe(24);
-  await act(async () => button('مزید خبریں دیکھیں').click());
-  expect(document.querySelectorAll('.listing-page .news-card').length).toBe(25);
-  expect(offsets).toEqual([0, 12, 12, 24]);
-  expect(button('مزید خبریں دیکھیں')).toBeUndefined();
-});
-
-test('category pagination asks the backend to filter labels and uses its filtered count', async () => {
-  const tagged = { ...post(1, 'sports-news'), tags: [
-    { id: 'sports', name: 'کھیل', slug: 'sports', legacy_category: 'sports-news' },
-    { id: 'pakistan', name: 'پاکستان', slug: 'pakistan', legacy_category: 'pakistan-news' },
-  ] };
-  api.defaults.adapter = async config => {
-    expect(config.params.tag).toBe('pakistan-news');
-    return respond(config, { posts: [tagged], totalCount: 1 });
-  };
-  await mount('/page/pakistan-news');
-  expect(document.querySelectorAll('.listing-page .news-card').length).toBe(1);
-  expect(button('مزید خبریں دیکھیں')).toBeUndefined();
-  expect(matchesCategory(tagged, 'pakistan-news')).toBe(true);
-});
-
-test('Urdu slug links and label pages use the API label name and filter', async () => {
-  const tagged = { ...post(1), slug: 'اردو-خبر-abc123', tags: [{ id: 'education', name: 'تعلیم', slug: 'تعلیم' }] };
-  expect(postPath(tagged)).toBe('/news/' + encodeURIComponent(tagged.slug));
-  expect(postPath(post(1))).toBe('/news/post-1');
-  api.defaults.adapter = async config => {
-    if (config.url.startsWith('/api/tags/')) return respond(config, { tag: tagged.tags[0] });
-    expect(config.params.tag).toBe('تعلیم');
-    return respond(config, { posts: [tagged], totalCount: 1 });
-  };
-  await mount('/tag/' + encodeURIComponent('تعلیم'));
-  expect(document.querySelector('.page-heading h1').textContent).toBe('تعلیم');
-  expect(document.querySelector('.story-link').getAttribute('href')).toBe(postPath(tagged));
-  expect(document.title).toBe('تعلیم | 96 News HD | ہر خبر باوثوق');
-});
-
-test('switching category cancels the old request and prevents stale stories overwriting the new page', async () => {
-  let oldSignal;
-  let resolveOld;
-  let calls = 0;
-  api.defaults.adapter = config => {
-    calls++;
-    if (calls === 1) {
-      oldSignal = config.signal;
-      return new Promise(resolve => { resolveOld = () => resolve(respond(config, { posts: [post(1)], totalCount: 1 })); });
-    }
-    return Promise.resolve(respond(config, { posts: [post(2, 'sports-news')], totalCount: 1 }));
-  };
-  await mount('/page/pakistan-news');
-  const sports = document.querySelector('.primary-nav a[href="/page/sports-news"]');
-  await act(async () => sports.dispatchEvent(new MouseEvent('click', { bubbles: true, button: 0 })));
-  expect(oldSignal.aborted).toBe(true);
-  await act(async () => resolveOld());
-  expect(document.querySelector('.listing-page .news-card h2').textContent).toBe('خبر نمبر 2');
-});
-
-test('search URL preserves Urdu and special characters as one query parameter', async () => {
-  const query = 'پاکستان & دنیا';
-  let received;
-  api.defaults.adapter = async config => {
-    received = config.params.query;
-    return respond(config, { results: [post(1)] });
-  };
-  await mount(`/search?${new URLSearchParams({ q: query })}`);
-  expect(received).toBe(query);
-  expect(document.title).toBe('پاکستان & دنیا | تلاش | 96 News HD | ہر خبر باوثوق');
-  expect(document.querySelector('#news-query').value).toBe(query);
-  expect(document.querySelector('.news-card')).not.toBeNull();
-});
-
-test('article page renders sanitized HTML and current article metadata', async () => {
-  api.defaults.adapter = async config => respond(config, config.url.includes('getpostbyid')
-    ? { post: { ...post(1), article: '<p><strong>خبر</strong><img src="x" onerror="bad()"></p>' }, authorname: 'رپورٹر' }
-    : { posts: [post(2)], totalCount: 1 });
-  await mount('/news/post-1');
-  await waitFor(() => document.querySelector('.article-body'));
-  expect(document.querySelector('.article-body strong').textContent).toBe('خبر');
-  expect(document.querySelector('.article-body [onerror]')).toBeNull();
-  expect(document.querySelector('.full-article h1').textContent).toBe('خبر نمبر 1');
-  expect(document.title).toBe('خبر نمبر 1 | 96 News HD | ہر خبر باوثوق');
-});
-
-test('disabled live route shows a notice and never starts a player or API request', async () => {
-  let calls = 0;
-  api.defaults.adapter = async () => { calls++; throw new Error('Unexpected request'); };
-  await mount('/live');
-  expect(document.body.textContent).toContain('لائیو نشریات فی الحال بند ہیں');
-  expect(document.querySelector('video')).toBeNull();
-  expect(calls).toBe(0);
-});
-
-test.each(['/admin/users', '/admin/paymentverify', '/portal/new-post', '/portal/profile', '/auth/login', '/auth/signup'])(
-  'staff route %s is unavailable and never requests account data', async path => {
-    let calls = 0;
-    api.defaults.adapter = async () => { calls++; throw new Error('Unexpected request'); };
-    await mount(path);
-    expect(document.body.textContent).toContain('یہ صفحہ نہیں ملا');
-    expect(calls).toBe(0);
-  },
-);
+test('route values are decoded once for both encoded page params and decoded metadata params', () => { expect(routeSlug(encodeURIComponent(post.slug))).toBe(post.slug); expect(routeSlug(post.slug)).toBe(post.slug); expect(routeSlug('%bad')).toBe('%bad'); });

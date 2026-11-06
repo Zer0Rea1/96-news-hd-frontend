@@ -4,13 +4,13 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist', 'legacy/**'] },
-  { files: ['tests/**/*.{js,jsx}'], languageOptions: { globals: globals.node } },
+  { ignores: ['dist', '.next/**', 'legacy/**'] },
+  { files: ['tests/**/*.{js,jsx}'], languageOptions: { globals: { ...globals.node, Bun: 'readonly' } } },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: { ...globals.browser, ...globals.node },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
@@ -31,6 +31,7 @@ export default [
       ],
     },
   },
+  { files: ['src/app/**/*.{js,jsx}'], rules: { 'react-refresh/only-export-components': 'off' } },
   {
     files: ['src/components/LivePlayer.jsx'],
     // shortcut: the dormant live player keeps compiler warnings, resolve before re-enabling it.

@@ -1,25 +1,14 @@
-import { Link } from 'react-router-dom';
-import { ImageOff } from 'lucide-react';
+import Link from 'next/link';
 import { postLabel, postPath, publishedDate } from '../data/categories';
 import { articleText } from '../utils/article';
 
-export function NewsImage({ post, priority = false }) {
-  const source = typeof post.thumbnailImage === 'string' && /^https?:\/\//i.test(post.thumbnailImage)
-    ? post.thumbnailImage : null;
-  return (
-    <div className="news-image">
-      <span className="image-fallback" aria-hidden="true"><ImageOff size={28} strokeWidth={1.4} /></span>
-      {source && <img src={source} alt={post.title} width="640" height="400"
-        loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : 'auto'}
-        decoding="async" onError={event => { event.currentTarget.hidden = true; }} />}
-    </div>
-  );
-}
+export { default as NewsImage } from './NewsImage';
+import NewsImage from './NewsImage';
 
 export default function NewsCard({ post, variant = 'standard', excerpt = false, priority = false }) {
   return (
     <article className={`news-card news-card--${variant}`}>
-      <Link to={postPath(post)} className="story-link">
+      <Link href={postPath(post)} className="story-link">
         <NewsImage post={post} priority={priority} />
         <div className="story-copy">
           <div className="story-meta"><span>{postLabel(post)}</span><time>{publishedDate(post.dateandtime)}</time></div>

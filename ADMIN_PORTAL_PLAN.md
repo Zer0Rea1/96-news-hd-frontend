@@ -141,9 +141,14 @@ Keep the previous main/profile deployment IDs, private source copies and API-com
 - [ ] A real printed card opens the expected profile on a phone.
 - [ ] Profile is public-only; its obsolete backend is removed only after all earlier checks pass.
 
-This document is a plan. The admin app and workspace move are not implemented yet. The permanent profile URL config is implemented and tested locally; no profile/admin removal or production profile cutover has been performed during planning.
+The workspace move and unified admin portal are implemented. The permanent profile URL configuration is tested. The public profile deployment has not been cut over or retired.
 
 
 ## Implementation status
 
-The three-app Bun workspace and separate reporter admin are implemented. Profile source is public-only; its production cutover, physical card checks, restore rehearsal, and old backend retirement remain pending. The original profile checkout and deployment are retained. News admin is a later phase.
+The three-app Bun workspace and separate reporter admin are implemented. Profile source is public-only; its production cutover, physical card checks, restore rehearsal, and old backend retirement remain pending. The original profile checkout and deployment are retained. News and tags now share this portal.
+
+
+## Unified portal update
+
+News CRUD, draft/published state, thumbnail upload, tags, and reporter management are implemented in one owner-only portal. The admin uses a clean dark theme. The public profile cutover, restore rehearsal, physical card scans, and retirement gates remain pending; no reporter records or existing printed URLs were changed.

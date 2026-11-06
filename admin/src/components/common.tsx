@@ -24,7 +24,7 @@ export function Brand({ light = false }: { light?: boolean }) {
         height={49}
       />
       <div className="brand-copy">
-        PRESSROOM<span>Credential management</span>
+        96 NEWS HD<span>Admin</span>
       </div>
     </div>
   );
