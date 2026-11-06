@@ -237,7 +237,7 @@ const LivePlayer = () => {
         <div className="mb-8 relative" ref={placeholderRef}>
             {/* Section title */}
             <div className="flex items-center mb-6 border-r-4 border-red-600 pr-4">
-                <h2 className="font-jameel-noori text-3xl text-gray-800 font-bold">
+                <h2 className="font-urdu text-3xl text-gray-800 font-bold">
                     لائیو نیوز
                 </h2>
                 <div className="flex-grow h-px bg-gray-200 mr-4"></div>

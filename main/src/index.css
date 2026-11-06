@@ -1,15 +1,8 @@
 @import "tailwindcss" source("../");
 
-@font-face {
-  font-family: 'MyCustomFont';
-  src: url('./assets/jameelnoori.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-
-body { margin: 0; font-family: 'MyCustomFont', Arial, sans-serif; }
-.normal-font { font-family: Arial, sans-serif; }
-.font-jameel-noori { font-family: 'MyCustomFont', Arial, sans-serif; }
+body { margin: 0; font-family: var(--font-urdu), sans-serif; }
+.normal-font { font-family: var(--font-urdu), sans-serif; }
+.font-urdu { font-family: var(--font-urdu), sans-serif; }
 .rtl { direction: rtl; }
 .ltr { direction: ltr; }
 
