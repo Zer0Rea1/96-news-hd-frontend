@@ -13,10 +13,6 @@
       "destination": "https://api.96newshd.com/api/:path*"
     },
     {
-      "source": "/admin/:path*",
-      "destination": "/index.html"
-    },
-    {
       "source": "/p/:path*",
       "destination": "/index.html"
     }
@@ -42,6 +38,13 @@
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/admin/:path*",
+      "destination": "https://admin.96newshd.com/admin/:path*",
+      "permanent": true
     }
   ]
 }
