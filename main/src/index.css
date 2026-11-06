@@ -1,0 +1,17 @@
+@import "tailwindcss" source("./");
+
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('./assets/jameelnoori.ttf') format('truetype');
+  font-style: normal;
+  font-display: swap;
+}
+
+body { margin: 0; font-family: 'MyCustomFont', Arial, sans-serif; }
+.normal-font { font-family: Arial, sans-serif; }
+.font-jameel-noori { font-family: 'MyCustomFont', Arial, sans-serif; }
+.rtl { direction: rtl; }
+.ltr { direction: ltr; }
+
+:focus-visible { outline: 2px solid #c3202b; outline-offset: 4px; }
+.app-loading { min-height: 65dvh; display: grid; place-items: center; color: #5b6069; font-size: 22px; }

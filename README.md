@@ -1,12 +1,20 @@
-# React + Vite
+# 96 News HD frontends
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+One Bun workspace, three separately deployed apps, one API at https://api.96newshd.com.
 
-Currently, two official plugins are available:
+| App | Directory | Production domain |
+| --- | --- | --- |
+| News website | `main/` | www.96newshd.com |
+| Private reporter admin | `admin/` | admin.96newshd.com |
+| Public reporter verification | `profile/` | profile.96newshd.com |
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Run `bun install`, then `bun run dev`, `bun run dev:admin`, or `bun run dev:profile`.
+Run `bun run test` and `bun run build` before deployment.
 
-## Expanding the ESLint configuration
+Vercel projects use the matching app directory as Root Directory, with files outside that directory included. Each app has its own vercel.json. Keep the single root bun.lock.
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Admin requires the two public Supabase values from admin/.env.example. The existing owner signs in with the same account; the API verifies the owner on every private request. No service key, database credentials, signup, or payment code belongs in these apps.
+
+Printed-card URLs always use PROFILE_ORIGIN in config.ts. Existing UUIDs and data remain unchanged. The old profile checkout and live deployment remain available until the new public profile cutover is verified. News editing is the next admin phase; this release carries the existing reporter management features.
+
+See ADMIN_PORTAL_PLAN.md for the rollout and retirement gates. Livestream source remains in main but is disabled.

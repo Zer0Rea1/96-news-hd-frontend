@@ -1,45 +1,19 @@
 {
-  "name": "96-news-hd-front",
+  "name": "96newshd-frontends",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "packageManager": "bun@1.3.3",
+  "workspaces": [
+    "main",
+    "admin",
+    "profile"
+  ],
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@reduxjs/toolkit": "^2.11.1",
-    "@tailwindcss/vite": "^4.1.17",
-    "@tiptap/core": "^2.27.1",
-    "@tiptap/extension-color": "^2.27.1",
-    "@tiptap/extension-text-align": "^2.27.1",
-    "@tiptap/extension-underline": "^2.27.1",
-    "@tiptap/pm": "^2.27.1",
-    "@tiptap/react": "^2.27.1",
-    "@tiptap/starter-kit": "^2.27.1",
-    "axios": "^1.13.2",
-    "hls.js": "^1.6.16",
-    "lucide-react": "^0.554.0",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "react-hook-form": "^7.68.0",
-    "react-redux": "^9.2.0",
-    "react-router": "^7.10.1",
-    "react-router-dom": "^7.10.1",
-    "react-toastify": "^11.0.5",
-    "tailwindcss": "^4.1.17"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^4.7.0",
-    "eslint": "^9.39.1",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "globals": "^15.15.0",
-    "vite": "^6.4.1"
+    "dev": "bun run --cwd main dev",
+    "dev:admin": "bun run --cwd admin dev --port 5174",
+    "dev:profile": "bun run --cwd profile dev --port 5175",
+    "build": "bun run --cwd main build && bun run --cwd admin build && bun run --cwd profile build",
+    "test": "bun test tests/workspace.test.ts && bun run --cwd main test && bun run --cwd admin test && bun run --cwd profile test",
+    "lint": "bun run --cwd main lint"
   }
 }
