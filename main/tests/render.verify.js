@@ -16,6 +16,7 @@ try {
   let ready = false;
   for (let i = 0; i < 40; i++) { try { await get('/robots.txt'); ready = true; break; } catch { await Bun.sleep(250); } }
   assert(ready, 'Next server did not become ready');
+  const icon = await get('/favicon.ico'); assert.equal(icon.status, 200); assert.match(icon.headers.get('content-type'), /image\/(?:x-icon|vnd\.microsoft\.icon)/);
   const home = await get('/'); assert.equal(home.status, 200); assert(home.html.includes('پاکستان کی خبر')); assert(home.html.includes('<title>96 News HD | ہر خبر باوثوق</title>'));
   const article = await get('/news/' + encodeURIComponent(slug)); assert.equal(article.status, 200); assert(article.html.includes('<title>پاکستان کی خبر | 96 News HD | ہر خبر باوثوق</title>')); assert(article.html.includes('property="og:type" content="article"'), article.html.match(/<meta[^>]+(?:og:|twitter:)[^>]*>/g)?.join('\n')); assert(article.html.includes('application/ld+json')); assert(article.html.includes('پاکستان کی مکمل خبر یہاں موجود ہے۔')); assert(!article.html.includes('<script>alert(1)</script>')); assert(article.html.includes('rel="canonical"')); assert(article.html.indexOf('property="og:type"') < article.html.indexOf('</head>'), 'Article metadata must be inside head');
   const legacy = await get('/news/a1'); assert.equal(legacy.status, 308); assert(legacy.headers.get('location').endsWith(encodeURIComponent(slug)));
