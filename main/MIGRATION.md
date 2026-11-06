@@ -8,6 +8,6 @@ Every route has server-generated title, description, canonical URL, Open Graph a
 
 `/robots.txt` advertises `/sitemap.xml`. The sitemap fetches every published article and public tag using backend pagination. It does not include drafts, search results, paused livestream, or staff routes. Search and paused live pages are noindex. The sitemap deliberately fails if the API returns an incomplete feed or more than 50,000 URLs; split the sitemap before the site reaches that limit.
 
-News requests use `no-store` so publishing changes appear on the next request. The Urdu layout, public route paths, and disabled livestream source are preserved. Google Noto Naskh Arabic is optimized by next/font with only the Arabic subset preloaded, Latin loaded on demand, and display swap; the 10.8 MB local Jameel Noori font has been removed. Pagination now uses crawlable links (`?page=2`) instead of client-only load-more state.
+News requests use `no-store` so publishing changes appear on the next request. The Urdu layout, public route paths, and disabled livestream source are preserved. Google Noto Nastaliq Urdu is optimized by next/font with only the Arabic subset preloaded, Latin loaded on demand, and display swap; the 10.8 MB local Jameel Noori font has been removed. Pagination now uses crawlable links (`?page=2`) instead of client-only load-more state.
 
 Tests cover sanitization, Urdu URLs, metadata/structured data escaping, API validation, crawl rules, and multi-page sitemap coverage. Browser visual verification is separate from these checks.
